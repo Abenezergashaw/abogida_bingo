@@ -14,6 +14,11 @@ if (userID) {
   username = "7052392258";
 }
 
+setTimeout(() => {
+  loadAndPlayAudio("https://abogida.duckdns.org/assets/start.m4a", "sound1");
+  console.log("Played");
+}, 2000);
+
 // Socket
 // const socket = new WebSocket("ws://192.168.1.5:3000");
 const socket = new WebSocket("wss://abogida.duckdns.org/");
