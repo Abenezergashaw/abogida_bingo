@@ -15,7 +15,7 @@ if (userID) {
 }
 
 document.getElementById("playButton").addEventListener("click", () => {
-  loadAndPlayAudio("https://yourcdn.com/sound1.mp3", "sound1");
+  loadAndPlayAudio("https://abogida.duckdns.org/assets/start.m4a", "start");
 });
 
 // Socket
