@@ -2372,7 +2372,7 @@ async function get_balance_of_user_when_starting_game(username) {
   try {
     console.log(username);
     const response = await fetch(
-      `http://abogida.duckdns.org/get_user_balance?u_id=${username}`
+      `https://abogida.duckdns.org/get_user_balance?u_id=${username}`
     );
     console.log("Response status:", response.status); // 👀 check this
 
