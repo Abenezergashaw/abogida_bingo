@@ -1,0 +1,2856 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .ball {
+        transition: transform 0.3s ease;
+      }
+
+      .ball-enter {
+        transform: translateX(-50%) scale(0);
+        opacity: 0;
+      }
+
+      .ball-enter-active {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+    </style>
+    <title>Bingo</title>
+  </head>
+  <body
+    class="font-[Poppins] min-h-screen justify-center bg-gradient-to-br from-gray-800 via-blue-900 to-gray-900 text-white p-2"
+    style="box-sizing: border-box"
+  >
+    <!-- Balance  -->
+    <div class="bg-gray-600 opacity-80 p-2 w-[100px] rounded-lg balance-text">
+      💰 Br. 0
+    </div>
+
+    <div
+      class="h-10 flex items-center justify-between bg-orange-600 p-4 mt-4 gap-4 font-semibold rounded-t-xl my-1 text-[14px]"
+    >
+      <div class="flex justify-center items-center rounded-lg w-[15%]">
+        Stake
+      </div>
+      <div class="flex justify-center items-center rounded-lg w-[20%]">
+        Active
+      </div>
+      <div class="flex justify-center items-center rounded-lg w-[15%]">
+        Players
+      </div>
+      <div class="flex justify-center items-center rounded-lg w-[27.5%]">
+        Winning
+      </div>
+      <div class="flex justify-center items-center rounded-lg w-[27.5%]">
+        Play
+      </div>
+    </div>
+
+    <!-- Br. 10 game entry  -->
+    <div
+      class="h-16 flex items-center justify-between bg-gray-800 p-4 gap-4 rounded-xl my-1 text-[14px] entry_10"
+    >
+      <div class="flex justify-center items-center rounded-lg w-[15%]">10</div>
+      <div class="w-[20%] flex gap-1 items-center justify-center">
+        <div
+          class="flex justify-center items-center rounded-lg entry_10_status"
+        >
+          playing
+        </div>
+        <div
+          class="w-3 h-3 rounded-full bg-red-500 animate-pulse hidden game_started_flag_10"
+        ></div>
+      </div>
+
+      <div
+        class="flex justify-center items-center rounded-lg entry_10_players w-[15%]"
+      >
+        0
+      </div>
+      <div
+        class="flex justify-center items-center rounded-lg entry_10_winning w-[27.5%]"
+      >
+        Br. 0
+      </div>
+      <div
+        class="flex justify-center items-center text-green-500 rounded-lg entry_10_play w-[27.5%]"
+        onclick="open_registry_10()"
+      >
+        Play
+      </div>
+    </div>
+
+    <!-- Br. 20 game entry  -->
+    <div
+      class="h-16 flex items-center justify-between bg-gray-800 p-4 gap-4 rounded-xl my-1 text-[14px] entry_20"
+    >
+      <div class="flex justify-center items-center rounded-lg w-[15%]">20</div>
+      <div class="w-[20%] flex gap-1 items-center justify-center">
+        <div
+          class="flex justify-center items-center rounded-lg entry_20_status"
+        >
+          playing
+        </div>
+        <div
+          class="w-3 h-3 rounded-full bg-red-500 animate-pulse hidden game_started_flag_20"
+        ></div>
+      </div>
+
+      <div
+        class="flex justify-center items-center rounded-lg entry_20_players w-[15%]"
+      >
+        0
+      </div>
+      <div
+        class="flex justify-center items-center rounded-lg entry_20_winning w-[27.5%]"
+      >
+        Br. 0
+      </div>
+      <div
+        class="flex justify-center items-center text-green-500 rounded-lg entry_20_play w-[27.5%]"
+        onclick="open_registry_20()"
+      >
+        Play
+      </div>
+    </div>
+
+    <!-- Br. 50 game entry  -->
+    <div
+      class="h-16 flex items-center justify-between bg-gray-800 p-4 gap-4 rounded-xl my-1 text-[14px] hidden"
+    >
+      <div class="flex justify-center items-center rounded-lg">50</div>
+      <div class="flex justify-center items-center rounded-lg">playing</div>
+      <div class="flex justify-center items-center rounded-lg">40</div>
+      <div class="flex justify-center items-center rounded-lg">Br. 1200</div>
+      <div class="flex justify-center items-center text-green-500 rounded-lg">
+        Play
+      </div>
+    </div>
+
+    <!-- Br. 100 game entry  -->
+    <div
+      class="h-16 flex items-center justify-between bg-gray-800 p-4 gap-4 rounded-xl my-1 text-[14px] opacity-60 hidden"
+    >
+      <div class="flex justify-center items-center rounded-lg">100</div>
+      <div class="flex justify-center items-center rounded-lg">Active</div>
+      <div class="flex justify-center items-center rounded-lg">40</div>
+      <div class="flex justify-center items-center rounded-lg">Br. 1900</div>
+      <div class="flex justify-center items-center text-green-500 rounded-lg">
+        Play
+      </div>
+    </div>
+
+    <!-- Br. 10 register -->
+    <div
+      class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 registery_10 hidden"
+    >
+      <!-- Body  -->
+      <div
+        class="w-full h-full bg-gradient-to-br from-gray-900 via-gray-600 to-gray-700 p-2 overflow-auto"
+      >
+        <!-- Information section like stake,active games  -->
+        <div
+          class="flex justify-between bg-gray-200 p-1 opacity-90 rounded-lg my-1"
+        >
+          <div
+            class="bg-blue-900 text-white p-2 rounded-lg flex flex-col items-center gap-1 w-28"
+          >
+            <span class="text-[16px] font-bold entry_10_status">0s</span>
+            <span class="text-[12px]">Starting in</span>
+          </div>
+          <div
+            class="bg-blue-900 text-white p-2 rounded-lg flex flex-col items-center gap-1 w-28"
+          >
+            <span class="text-[16px] font-bold">0</span>
+            <span class="text-[12px]">Active games</span>
+          </div>
+          <div
+            class="bg-blue-900 text-white p-2 rounded-lg flex flex-col items-center gap-1 w-28"
+          >
+            <span class="text-[16px] font-bold">10</span>
+            <span class="text-[12px]">Stake</span>
+          </div>
+        </div>
+
+        <!-- Cards from 1-100  -->
+        <div class="grid grid-cols-10 gap-1 text-white text-[18px] my-4">
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_1"
+          >
+            1
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_2"
+          >
+            2
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_3"
+          >
+            3
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_4"
+          >
+            4
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_5"
+          >
+            5
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_6"
+          >
+            6
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_7"
+          >
+            7
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_8"
+          >
+            8
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_9"
+          >
+            9
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_10"
+          >
+            10
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_11"
+          >
+            11
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_12"
+          >
+            12
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_13"
+          >
+            13
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_14"
+          >
+            14
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_15"
+          >
+            15
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_16"
+          >
+            16
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_17"
+          >
+            17
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_18"
+          >
+            18
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_19"
+          >
+            19
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_20"
+          >
+            20
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_21"
+          >
+            21
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_22"
+          >
+            22
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_23"
+          >
+            23
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_24"
+          >
+            24
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_25"
+          >
+            25
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_26"
+          >
+            26
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_27"
+          >
+            27
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_28"
+          >
+            28
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_29"
+          >
+            29
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_30"
+          >
+            30
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_31"
+          >
+            31
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_32"
+          >
+            32
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_33"
+          >
+            33
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_34"
+          >
+            34
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_35"
+          >
+            35
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_36"
+          >
+            36
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_37"
+          >
+            37
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_38"
+          >
+            38
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_39"
+          >
+            39
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_40"
+          >
+            40
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_41"
+          >
+            41
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_42"
+          >
+            42
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_43"
+          >
+            43
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_44"
+          >
+            44
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_45"
+          >
+            45
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_46"
+          >
+            46
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_47"
+          >
+            47
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_48"
+          >
+            48
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_49"
+          >
+            49
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_50"
+          >
+            50
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_51"
+          >
+            51
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_52"
+          >
+            52
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_53"
+          >
+            53
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_54"
+          >
+            54
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_55"
+          >
+            55
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_56"
+          >
+            56
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_57"
+          >
+            57
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_58"
+          >
+            58
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_59"
+          >
+            59
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_60"
+          >
+            60
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_61"
+          >
+            61
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_62"
+          >
+            62
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_63"
+          >
+            63
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_64"
+          >
+            64
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_65"
+          >
+            65
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_66"
+          >
+            66
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_67"
+          >
+            67
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_68"
+          >
+            68
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_69"
+          >
+            69
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_70"
+          >
+            70
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_71"
+          >
+            71
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_72"
+          >
+            72
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_73"
+          >
+            73
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_74"
+          >
+            74
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_75"
+          >
+            75
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_76"
+          >
+            76
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_77"
+          >
+            77
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_78"
+          >
+            78
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_79"
+          >
+            79
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_80"
+          >
+            80
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_81"
+          >
+            81
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_82"
+          >
+            82
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_83"
+          >
+            83
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_84"
+          >
+            84
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_85"
+          >
+            85
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_86"
+          >
+            86
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_87"
+          >
+            87
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_88"
+          >
+            88
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_89"
+          >
+            89
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_90"
+          >
+            90
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_91"
+          >
+            91
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_92"
+          >
+            92
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_93"
+          >
+            93
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_94"
+          >
+            94
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_95"
+          >
+            95
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_96"
+          >
+            96
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_97"
+          >
+            97
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_98"
+          >
+            98
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_99"
+          >
+            99
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_10 card_10_100"
+          >
+            100
+          </div>
+        </div>
+
+        <!-- Button to start game  -->
+        <div class="flex gap-1">
+          <div
+            class="bg-orange-500 text-white font-semibold py-2 px-4 rounded-xl shadow-lg hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer text-center w-[40%] mx-auto"
+            onclick="enter_game_10()"
+          >
+            Start game
+          </div>
+          <div
+            class="bg-blue-900 text-white font-semibold py-2 px-4 rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer text-center w-[40%] mx-auto"
+          >
+            Back
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Br. 10 game  -->
+    <div
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60 hidden game_10"
+    >
+      <div
+        class="bg-gradient-to-br from-gray-900 via-gray-600 to-gray-700 w-full h-full p-2 flex flex-col overflow-auto"
+      >
+        <!-- Information section like stake,winning... -->
+        <div
+          class="flex justify-between bg-gray-200 p-1 opacity-90 rounded-lg my-1"
+        >
+          <div
+            class="bg-blue-900 text-white p-2 rounded-lg flex justify-center items-center w-20"
+          >
+            <span class="text-[14px] font-bold entry_10_status"></span>
+            <!-- <span class="text-[12px]"></span> -->
+          </div>
+          <div
+            class="bg-blue-900 text-white p-2 rounded-lg flex flex-col items-center w-20"
+          >
+            <span class="text-[14px] font-bold entry_10_players">0</span>
+            <span class="text-[12px]">Players</span>
+          </div>
+          <div
+            class="bg-blue-900 text-white p-2 rounded-lg flex flex-col items-center w-20"
+          >
+            <span class="text-[14px] font-bold">Br. 10</span>
+            <span class="text-[12px]">Stake</span>
+          </div>
+          <div
+            class="bg-blue-900 text-white p-2 rounded-lg flex flex-col items-center w-20"
+          >
+            <span class="text-[14px] font-bold entry_10_winning">Br. 678</span>
+            <span class="text-[12px]">Winning</span>
+          </div>
+        </div>
+
+        <!-- 75 numbers div  -->
+        <div style="width: 90%; margin: 5px auto">
+          <div
+            class="grid grid-rows-5 grid-flow-col auto-cols-[5.1%] gap-1 text-white text-[10px] bg-gray-200 p-1 opacity-90 rounded-lg my-1"
+          >
+            <!-- B I N G O Header -->
+            <div
+              class="bingo-cell bg-blue-800 rounded flex items-center justify-center font-bold"
+            >
+              B
+            </div>
+            <div
+              class="bingo-cell bg-blue-800 rounded flex items-center justify-center font-bold"
+            >
+              I
+            </div>
+            <div
+              class="bingo-cell bg-blue-800 rounded flex items-center justify-center font-bold"
+            >
+              N
+            </div>
+            <div
+              class="bingo-cell bg-blue-800 rounded flex items-center justify-center font-bold"
+            >
+              G
+            </div>
+            <div
+              class="bingo-cell bg-blue-800 rounded flex items-center justify-center font-bold"
+            >
+              O
+            </div>
+
+            <!-- Numbers 1–75 -->
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_1"
+            >
+              1
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_2"
+            >
+              2
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_3"
+            >
+              3
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_4"
+            >
+              4
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_5"
+            >
+              5
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_6"
+            >
+              6
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_7"
+            >
+              7
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_8"
+            >
+              8
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_9"
+            >
+              9
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_10"
+            >
+              10
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_11"
+            >
+              11
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_12"
+            >
+              12
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_13"
+            >
+              13
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_14"
+            >
+              14
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_15"
+            >
+              15
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_16"
+            >
+              16
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_17"
+            >
+              17
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_18"
+            >
+              18
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_19"
+            >
+              19
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_20"
+            >
+              20
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_21"
+            >
+              21
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_22"
+            >
+              22
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_23"
+            >
+              23
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_24"
+            >
+              24
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_25"
+            >
+              25
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_26"
+            >
+              26
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_27"
+            >
+              27
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_28"
+            >
+              28
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_29"
+            >
+              29
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_30"
+            >
+              30
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_31"
+            >
+              31
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_32"
+            >
+              32
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_33"
+            >
+              33
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_34"
+            >
+              34
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_35"
+            >
+              35
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_36"
+            >
+              36
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_37"
+            >
+              37
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_38"
+            >
+              38
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_39"
+            >
+              39
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_40"
+            >
+              40
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_41"
+            >
+              41
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_42"
+            >
+              42
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_43"
+            >
+              43
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_44"
+            >
+              44
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_45"
+            >
+              45
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_46"
+            >
+              46
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_47"
+            >
+              47
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_48"
+            >
+              48
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_49"
+            >
+              49
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_50"
+            >
+              50
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_51"
+            >
+              51
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_52"
+            >
+              52
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_53"
+            >
+              53
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_54"
+            >
+              54
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_55"
+            >
+              55
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_56"
+            >
+              56
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_57"
+            >
+              57
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_58"
+            >
+              58
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_59"
+            >
+              59
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_60"
+            >
+              60
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_61"
+            >
+              61
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_62"
+            >
+              62
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_63"
+            >
+              63
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_64"
+            >
+              64
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_65"
+            >
+              65
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_66"
+            >
+              66
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_67"
+            >
+              67
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_68"
+            >
+              68
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_69"
+            >
+              69
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_70"
+            >
+              70
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_71"
+            >
+              71
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_72"
+            >
+              72
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_73"
+            >
+              73
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_74"
+            >
+              74
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_10 ball_10_75"
+            >
+              75
+            </div>
+          </div>
+        </div>
+
+        <!-- Drawing balls animation  -->
+        <div
+          id="call-container-10"
+          class="relative w-[90%] min-h-[60px] bg-gray-800 rounded-xl overflow-auto flex items-center"
+          style="margin: 5px auto"
+        >
+          <!-- Balls will be injected here -->
+        </div>
+
+        <button
+          onclick="animateCalling(document.getElementById('call-container-10'), 2, 'game-10', balls_10)"
+          class="mt-4 px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-full text-white font-semibold w-[90%] hidden"
+          style="margin: 5px auto"
+        >
+          Add Ball
+        </button>
+
+        <!-- Playing  cartela section  -->
+        <div class="playing_cartela_section_10"></div>
+        <!-- Bingo & refresh button  -->
+      </div>
+    </div>
+
+    <!-- Br. 10 winner modal -->
+    <div
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60 winner_10 hidden"
+    ></div>
+
+    <!-- Br. 20 register -->
+    <div
+      class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 registery_20 hidden"
+    >
+      <!-- Body  -->
+      <div
+        class="w-full h-full bg-gradient-to-br from-gray-900 via-gray-600 to-gray-700 p-2 overflow-auto"
+      >
+        <!-- Information section like stake,active games  -->
+        <div
+          class="flex justify-between bg-gray-200 p-1 opacity-90 rounded-lg my-1"
+        >
+          <div
+            class="bg-blue-900 text-white p-2 rounded-lg flex flex-col items-center gap-1 w-28"
+          >
+            <span class="text-[16px] font-bold entry_20_status">0s</span>
+            <span class="text-[12px]">Starting in</span>
+          </div>
+          <div
+            class="bg-blue-900 text-white p-2 rounded-lg flex flex-col items-center gap-1 w-28"
+          >
+            <span class="text-[16px] font-bold">0</span>
+            <span class="text-[12px]">Active games</span>
+          </div>
+          <div
+            class="bg-blue-900 text-white p-2 rounded-lg flex flex-col items-center gap-1 w-28"
+          >
+            <span class="text-[16px] font-bold">20</span>
+            <span class="text-[12px]">Stake</span>
+          </div>
+        </div>
+
+        <!-- Cards from 1-100  -->
+        <div class="grid grid-cols-10 gap-1 text-white text-[18px] my-4">
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_1"
+          >
+            1
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_2"
+          >
+            2
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_3"
+          >
+            3
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_4"
+          >
+            4
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_5"
+          >
+            5
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_6"
+          >
+            6
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_7"
+          >
+            7
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_8"
+          >
+            8
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_9"
+          >
+            9
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_10"
+          >
+            10
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_11"
+          >
+            11
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_12"
+          >
+            12
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_13"
+          >
+            13
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_14"
+          >
+            14
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_15"
+          >
+            15
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_16"
+          >
+            16
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_17"
+          >
+            17
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_18"
+          >
+            18
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_19"
+          >
+            19
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_20"
+          >
+            20
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_21"
+          >
+            21
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_22"
+          >
+            22
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_23"
+          >
+            23
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_24"
+          >
+            24
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_25"
+          >
+            25
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_26"
+          >
+            26
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_27"
+          >
+            27
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_28"
+          >
+            28
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_29"
+          >
+            29
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_30"
+          >
+            30
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_31"
+          >
+            31
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_32"
+          >
+            32
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_33"
+          >
+            33
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_34"
+          >
+            34
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_35"
+          >
+            35
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_36"
+          >
+            36
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_37"
+          >
+            37
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_38"
+          >
+            38
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_39"
+          >
+            39
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_40"
+          >
+            40
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_41"
+          >
+            41
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_42"
+          >
+            42
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_43"
+          >
+            43
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_44"
+          >
+            44
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_45"
+          >
+            45
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_46"
+          >
+            46
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_47"
+          >
+            47
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_48"
+          >
+            48
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_49"
+          >
+            49
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_50"
+          >
+            50
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_51"
+          >
+            51
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_52"
+          >
+            52
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_53"
+          >
+            53
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_54"
+          >
+            54
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_55"
+          >
+            55
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_56"
+          >
+            56
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_57"
+          >
+            57
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_58"
+          >
+            58
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_59"
+          >
+            59
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_60"
+          >
+            60
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_61"
+          >
+            61
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_62"
+          >
+            62
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_63"
+          >
+            63
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_64"
+          >
+            64
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_65"
+          >
+            65
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_66"
+          >
+            66
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_67"
+          >
+            67
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_68"
+          >
+            68
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_69"
+          >
+            69
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_70"
+          >
+            70
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_71"
+          >
+            71
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_72"
+          >
+            72
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_73"
+          >
+            73
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_74"
+          >
+            74
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_75"
+          >
+            75
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_76"
+          >
+            76
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_77"
+          >
+            77
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_78"
+          >
+            78
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_79"
+          >
+            79
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_80"
+          >
+            80
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_81"
+          >
+            81
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_82"
+          >
+            82
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_83"
+          >
+            83
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_84"
+          >
+            84
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_85"
+          >
+            85
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_86"
+          >
+            86
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_87"
+          >
+            87
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_88"
+          >
+            88
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_89"
+          >
+            89
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_90"
+          >
+            90
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_91"
+          >
+            91
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_92"
+          >
+            92
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_93"
+          >
+            93
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_94"
+          >
+            94
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_95"
+          >
+            95
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_96"
+          >
+            96
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_97"
+          >
+            97
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_98"
+          >
+            98
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_99"
+          >
+            99
+          </div>
+          <div
+            class="aspect-square bg-blue-500 rounded flex items-center justify-center cards_20 card_20_100"
+          >
+            100
+          </div>
+        </div>
+
+        <!-- Button to start game  -->
+        <div class="flex gap-1">
+          <div
+            class="bg-orange-500 text-white font-semibold py-2 px-4 rounded-xl shadow-lg hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer text-center w-[40%] mx-auto"
+            onclick="enter_game_20()"
+          >
+            Start game
+          </div>
+          <div
+            class="bg-blue-900 text-white font-semibold py-2 px-4 rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer text-center w-[40%] mx-auto"
+          >
+            Back
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Br. 20 game  -->
+    <div
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60 hidden game_20"
+    >
+      <div
+        class="bg-gradient-to-br from-gray-900 via-gray-600 to-gray-700 w-full h-full p-2 flex flex-col overflow-auto"
+      >
+        <!-- Information section like stake,winning... -->
+        <div
+          class="flex justify-between bg-gray-200 p-1 opacity-90 rounded-lg my-1"
+        >
+          <div
+            class="bg-blue-900 text-white p-2 rounded-lg flex justify-center items-center w-20"
+          >
+            <span class="text-[14px] font-bold entry_20_status"></span>
+            <!-- <span class="text-[12px]"></span> -->
+          </div>
+          <div
+            class="bg-blue-900 text-white p-2 rounded-lg flex flex-col items-center w-20"
+          >
+            <span class="text-[14px] font-bold entry_20_players">0</span>
+            <span class="text-[12px]">Players</span>
+          </div>
+          <div
+            class="bg-blue-900 text-white p-2 rounded-lg flex flex-col items-center w-20"
+          >
+            <span class="text-[14px] font-bold">Br. 20</span>
+            <span class="text-[12px]">Stake</span>
+          </div>
+          <div
+            class="bg-blue-900 text-white p-2 rounded-lg flex flex-col items-center w-20"
+          >
+            <span class="text-[14px] font-bold entry_20_winning">Br. 0</span>
+            <span class="text-[12px]">Winning</span>
+          </div>
+        </div>
+
+        <!-- 75 numbers div  -->
+        <div style="width: 90%; margin: 5px auto">
+          <div
+            class="grid grid-rows-5 grid-flow-col auto-cols-[5.1%] gap-1 text-white text-[10px] bg-gray-200 p-1 opacity-90 rounded-lg my-1"
+          >
+            <!-- B I N G O Header -->
+            <div
+              class="bingo-cell bg-blue-800 rounded flex items-center justify-center font-bold"
+            >
+              B
+            </div>
+            <div
+              class="bingo-cell bg-blue-800 rounded flex items-center justify-center font-bold"
+            >
+              I
+            </div>
+            <div
+              class="bingo-cell bg-blue-800 rounded flex items-center justify-center font-bold"
+            >
+              N
+            </div>
+            <div
+              class="bingo-cell bg-blue-800 rounded flex items-center justify-center font-bold"
+            >
+              G
+            </div>
+            <div
+              class="bingo-cell bg-blue-800 rounded flex items-center justify-center font-bold"
+            >
+              O
+            </div>
+
+            <!-- Numbers 1–75 -->
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_1"
+            >
+              1
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_2"
+            >
+              2
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_3"
+            >
+              3
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_4"
+            >
+              4
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_5"
+            >
+              5
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_6"
+            >
+              6
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_7"
+            >
+              7
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_8"
+            >
+              8
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_9"
+            >
+              9
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_10"
+            >
+              10
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_11"
+            >
+              11
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_12"
+            >
+              12
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_13"
+            >
+              13
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_14"
+            >
+              14
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_15"
+            >
+              15
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_16"
+            >
+              16
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_17"
+            >
+              17
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_18"
+            >
+              18
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_19"
+            >
+              19
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_20"
+            >
+              20
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_21"
+            >
+              21
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_22"
+            >
+              22
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_23"
+            >
+              23
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_24"
+            >
+              24
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_25"
+            >
+              25
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_26"
+            >
+              26
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_27"
+            >
+              27
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_28"
+            >
+              28
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_29"
+            >
+              29
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_30"
+            >
+              30
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_31"
+            >
+              31
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_32"
+            >
+              32
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_33"
+            >
+              33
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_34"
+            >
+              34
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_35"
+            >
+              35
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_36"
+            >
+              36
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_37"
+            >
+              37
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_38"
+            >
+              38
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_39"
+            >
+              39
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_40"
+            >
+              40
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_41"
+            >
+              41
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_42"
+            >
+              42
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_43"
+            >
+              43
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_44"
+            >
+              44
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_45"
+            >
+              45
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_46"
+            >
+              46
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_47"
+            >
+              47
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_48"
+            >
+              48
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_49"
+            >
+              49
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_50"
+            >
+              50
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_51"
+            >
+              51
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_52"
+            >
+              52
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_53"
+            >
+              53
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_54"
+            >
+              54
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_55"
+            >
+              55
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_56"
+            >
+              56
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_57"
+            >
+              57
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_58"
+            >
+              58
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_59"
+            >
+              59
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_60"
+            >
+              60
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_61"
+            >
+              61
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_62"
+            >
+              62
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_63"
+            >
+              63
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_64"
+            >
+              64
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_65"
+            >
+              65
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_66"
+            >
+              66
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_67"
+            >
+              67
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_68"
+            >
+              68
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_69"
+            >
+              69
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_70"
+            >
+              70
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_71"
+            >
+              71
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_72"
+            >
+              72
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_73"
+            >
+              73
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_74"
+            >
+              74
+            </div>
+            <div
+              class="bingo-cell bg-blue-500 rounded flex items-center justify-center balls_20 ball_20_75"
+            >
+              75
+            </div>
+          </div>
+        </div>
+
+        <!-- Drawing balls animation  -->
+        <div
+          id="call-container-20"
+          class="relative w-[90%] min-h-[60px] bg-gray-800 rounded-xl overflow-auto flex items-center"
+          style="margin: 5px auto"
+        >
+          <!-- Balls will be injected here -->
+        </div>
+
+        <button
+          onclick="animateCalling(document.getElementById('call-container-20'), 2, 'game-20', balls_20)"
+          class="mt-4 px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-full text-white font-semibold w-[90%] hidden"
+          style="margin: 5px auto"
+        >
+          Add Ball
+        </button>
+
+        <!-- Playing  cartela section  -->
+        <div class="playing_cartela_section_20"></div>
+        <!-- Bingo & refresh button  -->
+      </div>
+    </div>
+
+    <!-- Br. 10 winner modal -->
+    <div
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60 winner_20 hidden"
+    ></div>
+
+    <script>
+      // Socket
+      const socket = new WebSocket("ws://192.168.1.10:3000");
+      // const socket = new WebSocket("ws://192.168.0.5:3000");
+
+      // Later get from db
+      let username =
+        localStorage.getItem("username") ||
+        Math.floor(Math.random() * 10000) + 1;
+      localStorage.setItem("username", username);
+      console.log("username", username);
+      let balance = localStorage.getItem("balance") || 100;
+
+      // Global
+      let cards = null;
+
+      // Game 10 containers
+      const registery_10 = document.querySelector(".registery_10");
+      const game_10 = document.querySelector(".game_10");
+      const winner_10 = document.querySelector(".winner_10");
+      const playing_cartela_container_10 = document.querySelector(
+        ".playing_cartela_section_10"
+      );
+
+      // Game 20 containers
+      const registery_20 = document.querySelector(".registery_20");
+      const game_20 = document.querySelector(".game_20");
+      const winner_20 = document.querySelector(".winner_20");
+      const playing_cartela_container_20 = document.querySelector(
+        ".playing_cartela_section_20"
+      );
+
+      // Game 10 variables
+      let selected_card_10 = null;
+      let active_game_10 = true;
+
+      // Game 20 variables
+      let selected_card_20 = null;
+      let active_game_20 = true;
+
+      document.querySelector(".balance-text").textContent = "💰 Br. " + balance;
+
+      balance > 10
+        ? document.querySelector(".entry_10").classList.remove("opacity-60")
+        : document.querySelector(".entry_10").classList.add("opacity-60");
+
+      socket.addEventListener("open", () => {
+        console.log("Connected to WebSocket");
+        socket.send(
+          JSON.stringify({
+            type: "init",
+            username,
+          })
+        );
+      });
+
+      socket.addEventListener("message", (event) => {
+        const data = JSON.parse(event.data);
+        // console.log(data);
+        if (data.type === "infos") {
+          cards = data.cards;
+          active_game_10 = data.active_game_10;
+          active_game_20 = data.active_game_20;
+          if (active_game_10) {
+            document
+              .querySelector(".game_started_flag_10")
+              .classList.remove("hidden");
+          }
+          if (active_game_20) {
+            document
+              .querySelector(".game_started_flag_20")
+              .classList.remove("hidden");
+          }
+        }
+        if (data.type === "refresh_players") {
+          console.log(data.players_10_set);
+          console.log(data.players_20_set);
+          for (let i = 0; i < data.players_10_set.length; i++) {
+            document
+              .querySelector(`.card_10_${data.players_10_set[i]}`)
+              .classList.add("opacity-30");
+          }
+          for (let i = 0; i < data.players_20_set.length; i++) {
+            document
+              .querySelector(`.card_20_${data.players_20_set[i]}`)
+              .classList.add("opacity-30");
+          }
+          update_info_of_10(active_game_10, data.players_10_set.length);
+          update_info_of_20(active_game_20, data.players_20_set.length);
+        }
+        if (data.type === "timer_10") {
+          update_info_of_10(data.value, data.players);
+        } else if (data.type === "new_card_selected_10") {
+          let sent_username = data.username;
+          let current_card = data.current_card;
+          let new_card = data.new_card;
+          selected_card_10 = new_card;
+          console.log(selected_card_10);
+          if (sent_username === username) {
+            document
+              .querySelector(`.card_10_${new_card}`)
+              .classList.add("bg-green-200", "text-gray-800");
+          } else {
+            document
+              .querySelector(`.card_10_${new_card}`)
+              .classList.add("opacity-30");
+          }
+          if (current_card) {
+            document
+              .querySelector(`.card_10_${current_card}`)
+              .classList.remove("bg-green-200", "text-gray-800");
+            document
+              .querySelector(`.card_10_${current_card}`)
+              .classList.remove("opacity-30");
+          }
+        } else if (data.type === "remove_card_on_leave_10") {
+          let n = data.number;
+          if (n) {
+            document
+              .querySelector(`.card_10_${n}`)
+              .classList.remove("opacity-30");
+          }
+        } else if (data.type === "game_started_10") {
+          console.log(data.players_10);
+          let player = data.players_10.find((p) => p.username === username);
+          active_game_10 = data.active_game_10;
+          if (player) {
+            console.log(cards[player.number - 1]);
+            document.querySelectorAll(".entry_10_status").forEach((el) => {
+              el.textContent = "Active";
+            });
+          }
+          document
+            .querySelector(".game_started_flag_10")
+            .classList.remove("hidden");
+          document.querySelector(".entry_10_status").textContent = "Active";
+          document.querySelectorAll(".cards_10").forEach((c) => {
+            c.classList.remove("opacity-30");
+            c.classList.remove("bg-green-200", "text-gray-800");
+          });
+        } else if (data.type === "numbers_being_called_10") {
+          let player = data.players_10.find((p) => p.username === username);
+          if (player) {
+            console.log("Number", data.current_drawn_number_10);
+            animateCalling(
+              document.getElementById("call-container-10"),
+              data.current_drawn_number_10,
+              "game_10_animate_balls",
+              balls_10
+            );
+            document
+              .querySelector(`.ball_10_${data.current_drawn_number_10}`)
+              .classList.add("bg-orange-500");
+          }
+        } else if (data.type === "all_numbers_called_10") {
+          active_game_10 = data.active_game_10;
+          let player = data.players_10.find((p) => p.username === username);
+          document
+            .querySelector(".game_started_flag_10")
+            .classList.add("hidden");
+
+          if (player) {
+            let number = player.number;
+            registery_10.classList.add("hidden");
+            game_10.classList.add("hidden");
+          }
+        } else if (data.type === "bingo_10") {
+          active_game_10 = data.active_game_10;
+
+          let player = data.players_10.find((p) => p.username === username);
+          document
+            .querySelector(".game_started_flag_10")
+            .classList.add("hidden");
+
+          if (player && player.active) {
+            let number = player.number;
+            registery_10.classList.add("hidden");
+            game_10.classList.add("hidden");
+            winner_10.classList.remove("hidden");
+            winner_10.innerHTML = data.html;
+            document
+              .querySelector(".continue_game_10")
+              .addEventListener("click", () => {
+                winner_10.classList.add("hidden");
+              });
+          }
+          document.querySelectorAll(".cards_10").forEach((c) => {
+            c.classList.remove("opacity-30");
+            c.classList.remove("bg-green-200", "text-gray-800");
+          });
+
+          document.querySelectorAll(".balls_10").forEach((c) => {
+            c.classList.remove("bg-orange-500");
+          });
+
+          document.querySelectorAll(".game_10_animate_balls").forEach((c) => {
+            c.remove();
+          });
+        }
+
+        // Game 20 socket messages
+        else if (data.type === "timer_20") {
+          update_info_of_20(data.value, data.players);
+        } else if (data.type === "new_card_selected_20") {
+          let sent_username = data.username;
+          let current_card = data.current_card;
+          let new_card = data.new_card;
+          selected_card_20 = new_card;
+          console.log(selected_card_20);
+          if (sent_username === username) {
+            document
+              .querySelector(`.card_20_${new_card}`)
+              .classList.add("bg-green-200", "text-gray-800");
+          } else {
+            document
+              .querySelector(`.card_20_${new_card}`)
+              .classList.add("opacity-30");
+          }
+          if (current_card) {
+            document
+              .querySelector(`.card_20_${current_card}`)
+              .classList.remove("bg-green-200", "text-gray-800");
+            document
+              .querySelector(`.card_20_${current_card}`)
+              .classList.remove("opacity-30");
+          }
+        } else if (data.type === "remove_card_on_leave_20") {
+          let n = data.number;
+          if (n) {
+            document
+              .querySelector(`.card_20_${n}`)
+              .classList.remove("opacity-30");
+          }
+        } else if (data.type === "game_started_20") {
+          console.log(data.players_20);
+          let player = data.players_20.find((p) => p.username === username);
+          active_game_20 = data.active_game_20;
+          if (player) {
+            console.log(cards[player.number - 1]);
+            document.querySelectorAll(".entry_20_status").forEach((el) => {
+              el.textContent = "Active";
+            });
+          }
+          document
+            .querySelector(".game_started_flag_20")
+            .classList.remove("hidden");
+          document.querySelector(".entry_20_status").textContent = "Active";
+          document.querySelectorAll(".cards_20").forEach((c) => {
+            c.classList.remove("opacity-30");
+            c.classList.remove("bg-green-200", "text-gray-800");
+          });
+        } else if (data.type === "numbers_being_called_20") {
+          let player = data.players_20.find((p) => p.username === username);
+          if (player) {
+            console.log("Number", data.current_drawn_number_20);
+            animateCalling(
+              document.getElementById("call-container-20"),
+              data.current_drawn_number_20,
+              "game_20_animate_balls",
+              balls_20
+            );
+            document
+              .querySelector(`.ball_20_${data.current_drawn_number_20}`)
+              .classList.add("bg-orange-500");
+          }
+        } else if (data.type === "all_numbers_called_20") {
+          active_game_20 = data.active_game_20;
+          let player = data.players_20.find((p) => p.username === username);
+          document
+            .querySelector(".game_started_flag_20")
+            .classList.add("hidden");
+
+          if (player) {
+            let number = player.number;
+            registery_20.classList.add("hidden");
+            game_20.classList.add("hidden");
+          }
+        } else if (data.type === "bingo_20") {
+          active_game_20 = data.active_game_20;
+
+          let player = data.players_20.find((p) => p.username === username);
+          document
+            .querySelector(".game_started_flag_20")
+            .classList.add("hidden");
+
+          if (player && player.active) {
+            let number = player.number;
+            registery_20.classList.add("hidden");
+            game_20.classList.add("hidden");
+            winner_20.classList.remove("hidden");
+            winner_20.innerHTML = data.html;
+            document
+              .querySelector(".continue_game_20")
+              .addEventListener("click", () => {
+                winner_20.classList.add("hidden");
+              });
+          }
+          document.querySelectorAll(".cards_20").forEach((c) => {
+            c.classList.remove("opacity-30");
+            c.classList.remove("bg-green-200", "text-gray-800");
+          });
+
+          document.querySelectorAll(".balls_20").forEach((c) => {
+            c.classList.remove("bg-orange-500");
+          });
+
+          document.querySelectorAll(".game_20_animate_balls").forEach((c) => {
+            c.remove();
+          });
+        }
+      });
+
+      let balls_10 = [];
+      let balls_20 = [];
+      function animateCalling(container, number, game, balls) {
+        // Shift existing balls right
+        balls.forEach((ball, i) => {
+          ball.style.transform = `translateX(${(i + 1) * 40}px)`;
+        });
+
+        // Create new ball
+        const newBall = document.createElement("div");
+        newBall.className = `ball ball-enter absolute w-8 h-8 bg-orange-400 rounded-full left-1/2 ${game} flex justify-center items-center text-black`;
+        newBall.textContent = number;
+        container.appendChild(newBall);
+
+        // Force reflow for animation
+        void newBall.offsetWidth;
+
+        // Trigger transition to active
+        newBall.classList.add("ball-enter-active");
+
+        // Add to array
+        balls.unshift(newBall);
+
+        // Limit to 5 balls
+        if (balls.length > 5) {
+          const removed = balls.pop();
+          removed.remove();
+        }
+      }
+
+      function open_registry_10() {
+        if (!active_game_10) {
+          registery_10.classList.remove("hidden");
+        }
+      }
+      function open_registry_20() {
+        if (!active_game_20) {
+          registery_20.classList.remove("hidden");
+        }
+      }
+
+      document.querySelectorAll(".cards_10").forEach((c) => {
+        c.addEventListener("click", () => {
+          socket.send(
+            JSON.stringify({
+              type: "selection_card_10",
+              card_number: c.textContent.trim(),
+              username,
+            })
+          );
+          selected_card_10 = c.textContent.trim();
+        });
+      });
+
+      document.querySelectorAll(".cards_20").forEach((c) => {
+        c.addEventListener("click", () => {
+          socket.send(
+            JSON.stringify({
+              type: "selection_card_20",
+              card_number: c.textContent.trim(),
+              username,
+            })
+          );
+          selected_card_20 = c.textContent.trim();
+        });
+      });
+
+      function enter_game_10() {
+        console.log("Game state: ", active_game_10);
+        if (selected_card_10 !== null) {
+          if (!active_game_10) {
+            socket.send(
+              JSON.stringify({
+                type: "entering_game_10",
+                username,
+              })
+            );
+            registery_10.classList.add("hidden");
+            game_10.classList.remove("hidden");
+            create_playing_cartela_10(cards[selected_card_10 - 1]);
+          }
+        }
+      }
+
+      function enter_game_20() {
+        console.log("Game state: ", active_game_20);
+        if (selected_card_20 !== null) {
+          if (!active_game_20) {
+            socket.send(
+              JSON.stringify({
+                type: "entering_game_20",
+                username,
+              })
+            );
+            registery_20.classList.add("hidden");
+            game_20.classList.remove("hidden");
+            create_playing_cartela_20(cards[selected_card_20 - 1]);
+          }
+        }
+      }
+
+      function update_info_of_10(game_state_or_time, players) {
+        let state = game_state_or_time ? "0" : game_state_or_time;
+        document.querySelectorAll(".entry_10_status").forEach((el) => {
+          el.textContent = game_state_or_time + " s";
+        });
+
+        let winning = players * 10 * 0.8;
+
+        document.querySelectorAll(".entry_10_players").forEach((p) => {
+          p.textContent = players;
+        });
+        document.querySelectorAll(".entry_10_winning").forEach((w) => {
+          w.textContent = "Br. " + winning;
+        });
+      }
+
+      function update_info_of_20(game_state_or_time, players) {
+        let state = game_state_or_time ? "0" : game_state_or_time;
+        document.querySelectorAll(".entry_20_status").forEach((el) => {
+          el.textContent = game_state_or_time + " s";
+        });
+
+        let winning = players * 20 * 0.8;
+
+        document.querySelectorAll(".entry_20_players").forEach((p) => {
+          p.textContent = players;
+        });
+        document.querySelectorAll(".entry_20_winning").forEach((w) => {
+          w.textContent = "Br. " + winning;
+        });
+      }
+
+      function create_playing_cartela_10(c) {
+        let cartela = ``;
+        cartela += `<div
+            class="w-[80%] mx-auto bg-gray-800 text-white rounded-lg p-4 select-none text-[20px]"
+          >
+            <div
+              class="w-[20%] h-8 bg-gray-300 text-black text-lg font-bold flex justify-center items-center rounded-lg"
+              style="margin: 0px auto 5px"
+            >
+              ${c.id}
+            </div>
+
+            <!-- Headers -->
+            <div class="grid grid-cols-5 text-center font-bold text-xl mb-2">
+              <div>B</div>
+              <div>I</div>
+              <div>N</div>
+              <div>G</div>
+              <div>O</div>
+            </div>
+
+            <!-- Cells -->
+            <div class="grid grid-cols-5 gap-1 text-center text-lg">
+              <!-- 25 cells (you can fill with numbers or placeholders) -->
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.b1}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.i1}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.n1}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.g1}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.o1}</div>
+
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.b2}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.i2}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.n2}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.g2}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.o2}</div>
+
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.b3}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.i3}</div>
+              <div class="bg-gray-100 text-black rounded py-2 ">FREE</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.g3}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.o3}</div>
+
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.b4}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.i4}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.n4}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.g4}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.o4}</div>
+
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.b5}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.i5}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.n5}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.g5}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_10">${c.o5}</div>
+            </div>
+          </div>`;
+
+        cartela += `<div
+          class="mt-4  py-2 text-white font-semibold w-[90%] flex flex-col justify-center"
+          style="margin: 5px auto "
+        >
+          <div
+            class="mt-4 px-6 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg text-white font-semibold w-[100%] flex justify-center bingo_10 "
+
+          >
+            BINGO
+          </div>
+          <div
+            class="mt-4 px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-semibold w-[100%] flex justify-center  refresh_10"
+
+          >
+            Refresh
+          </div>
+        </div>`;
+
+        playing_cartela_container_10.innerHTML = cartela;
+        document.querySelector(".bingo_10").addEventListener("click", () => {
+          socket.send(
+            JSON.stringify({
+              type: "bingo_10",
+              number: c.id,
+              username,
+            })
+          );
+        });
+
+        document.querySelectorAll(".playing_cartela_number_10").forEach((p) => {
+          p.addEventListener("click", () => {
+            // p.classList.toggle("bg-gray-300");
+            if (!p.classList.contains("bg-gray-100")) {
+              p.classList.add("bg-gray-100", "text-black");
+              p.classList.remove("bg-gray-700");
+            } else {
+              p.classList.remove("bg-gray-100", "text-black");
+              p.classList.add("bg-gray-700");
+            }
+            console.log(p.textContent.trim());
+          });
+        });
+      }
+
+      function create_playing_cartela_20(c) {
+        let cartela = ``;
+        cartela += `<div
+            class="w-[80%] mx-auto bg-gray-800 text-white rounded-lg p-4 select-none text-[20px]"
+          >
+            <div
+              class="w-[20%] h-8 bg-gray-300 text-black text-lg font-bold flex justify-center items-center rounded-lg"
+              style="margin: 0px auto 5px"
+            >
+              ${c.id}
+            </div>
+
+            <!-- Headers -->
+            <div class="grid grid-cols-5 text-center font-bold text-xl mb-2">
+              <div>B</div>
+              <div>I</div>
+              <div>N</div>
+              <div>G</div>
+              <div>O</div>
+            </div>
+
+            <!-- Cells -->
+            <div class="grid grid-cols-5 gap-1 text-center text-lg">
+              <!-- 25 cells (you can fill with numbers or placeholders) -->
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.b1}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.i1}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.n1}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.g1}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.o1}</div>
+
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.b2}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.i2}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.n2}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.g2}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.o2}</div>
+
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.b3}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.i3}</div>
+              <div class="bg-gray-200 text-black rounded py-2 ">FREE</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.g3}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.o3}</div>
+
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.b4}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.i4}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.n4}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.g4}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.o4}</div>
+
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.b5}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.i5}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.n5}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.g5}</div>
+              <div class="bg-gray-700 rounded py-2 playing_cartela_number_20">${c.o5}</div>
+            </div>
+          </div>`;
+
+        cartela += `<div
+          class="mt-4  py-2 text-white font-semibold w-[90%] flex flex-col justify-center"
+          style="margin: 5px auto "
+        >
+          <div
+            class="mt-4 px-6 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg text-white font-semibold w-[100%] flex justify-center bingo_20 "
+
+          >
+            BINGO
+          </div>
+          <div
+            class="mt-4 px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-semibold w-[100%] flex justify-center  refresh_20"
+
+          >
+            Refresh
+          </div>
+        </div>`;
+
+        playing_cartela_container_20.innerHTML = cartela;
+        document.querySelector(".bingo_20").addEventListener("click", () => {
+          socket.send(
+            JSON.stringify({
+              type: "bingo_20",
+              number: c.id,
+              username,
+            })
+          );
+        });
+
+        document.querySelectorAll(".playing_cartela_number_20").forEach((p) => {
+          p.addEventListener("click", () => {
+            // p.classList.toggle("bg-gray-300");
+            if (!p.classList.contains("bg-gray-100")) {
+              p.classList.add("bg-gray-100", "text-black");
+              p.classList.remove("bg-gray-700");
+            } else {
+              p.classList.remove("bg-gray-100", "text-black");
+              p.classList.add("bg-gray-700");
+            }
+            console.log(p.textContent.trim());
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

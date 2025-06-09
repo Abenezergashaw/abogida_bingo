@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smooth Ball Animation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .ball {
+        transition: transform 0.3s ease;
+      }
+
+      .ball-enter {
+        transform: translateX(-50%) scale(0);
+        opacity: 0;
+      }
+
+      .ball-enter-active {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gray-900 text-white flex flex-col items-center justify-center h-screen"
+  >
+    <!-- Container -->
+    <div
+      id="ball-container"
+      class="relative w-[90%] h-24 bg-gray-800 rounded-xl overflow-hidden flex items-center"
+    >
+      <!-- Balls will be injected here -->
+    </div>
+
+    <!-- Button -->
+    <button
+      onclick="addBall(6)"
+      class="mt-4 px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-full text-white font-semibold"
+    >
+      Add Ball
+    </button>
+
+    <script>
+      const container = document.getElementById("ball-container");
+      let balls = [];
+
+      function addBall(a) {
+        let maxBalls = 5;
+
+        // Shift existing balls right
+        balls.forEach((ball, i) => {
+          ball.style.transform = `translateX(${(i + 1) * 30}px)`;
+        });
+
+        // Create new ball
+        const newBall = document.createElement("div");
+        newBall.className =
+          "ball ball-enter absolute w-5 h-5 bg-yellow-400 rounded-full left-1/2";
+        newBall.textContent = a;
+        container.appendChild(newBall);
+
+        // Force reflow for animation
+        void newBall.offsetWidth;
+
+        // Trigger transition to active
+        newBall.classList.add("ball-enter-active");
+
+        // Add to array
+        balls.unshift(newBall);
+
+        // Limit to 5 balls
+        if (balls.length > maxBalls) {
+          const removed = balls.pop();
+          removed.remove();
+        }
+      }
+    </script>
+  </body>
+</html>
