@@ -16,7 +16,7 @@ let username = "7052392258";
 
 // Socket
 // const socket = new WebSocket("ws://192.168.1.5:3000");
-const socket = new WebSocket("ws://abogida.duckdns.org/");
+const socket = new WebSocket("wss://abogida.duckdns.org/");
 // const socket = new WebSocket("ws://192.168.0.5:3000");
 
 // Later get from db
