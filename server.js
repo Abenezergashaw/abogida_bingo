@@ -1016,11 +1016,9 @@ wss.on("connection", (ws) => {
   });
 });
 
-app.use(express.static(path.join(__dirname, "public")));
-
-app.use((req, res) => {
-  res.status(404).send("File not found");
-});
+// app.use((req, res) => {
+//   res.status(404).send("File not found");
+// });
 
 function broadcast(data) {
   const message = JSON.stringify(data);
@@ -3126,6 +3124,8 @@ async function w_third_step_telebirr(u_id, amount) {
 // server.listen(PORT, () => {
 //   console.log(`Server is running at http://localhost:${PORT}`);
 // });
+
+app.use(express.static(path.join(__dirname, "public")));
 
 app.listen(3000, "0.0.0.0", () => {
   console.log("Server running on port 3000");
