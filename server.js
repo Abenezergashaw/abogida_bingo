@@ -26,24 +26,24 @@ const wss = new WebSocketServer({ server });
 const bot = new TelegramBot(token, { polling: true });
 
 // MySQL connection setup
-// const pool = mysql.createPool({
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASSWORD,
-//   database: process.env.DB_NAME,
-//   waitForConnections: true,
-//   connectionLimit: 10,
-//   queueLimit: 0,
-// });
 const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "Ab@596919",
-  database: "bingo",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
 });
+// const pool = mysql.createPool({
+//   host: "localhost",
+//   user: "root",
+//   password: "Ab@596919",
+//   database: "bingo",
+//   waitForConnections: true,
+//   connectionLimit: 10,
+//   queueLimit: 0,
+// });
 
 //Routes
 app.get("/ping", (req, res) => {
@@ -2827,56 +2827,60 @@ async function reward_the_referrer(u_id) {
   const [rows] = await pool.query(
     `SELECT referrer_id FROM referrals where user_id = ${u_id}`
   );
-  console.lo;
-  let r_id = rows[0].referrer_id.toString();
+  console.log("Rowsssss: ", rows);
+  if (rows.length > 0) {
+    let r_id = rows[0].referrer_id.toString();
 
-  try {
-    // Step 1: Get the current balance and bonus
-    const [rows2] = await pool.query(
-      `SELECT bonus FROM users WHERE user_id = ?`,
-      [r_id]
-    );
+    try {
+      // Step 1: Get the current balance and bonus
+      const [rows2] = await pool.query(
+        `SELECT bonus FROM users WHERE user_id = ?`,
+        [r_id]
+      );
 
-    if (rows2.length === 0) {
-      throw new Error("User not found");
-    }
-
-    const currentBalance = rows2[0].bonus;
-    const newBalance = currentBalance + 3;
-
-    // Step 2: Update the balance
-    await pool.query(`UPDATE users SET bonus = ? WHERE user_id = ?`, [
-      newBalance,
-      r_id,
-    ]);
-
-    let balance = await get_balance_of_specific_user(r_id).catch(console.error);
-    let real_balance = balance[0].balance;
-    let bonus = balance[0].bonus;
-    bot.sendMessage(
-      r_id,
-      `You have received Br. 3 from your invite. \n\`\`\` 💰 Withdrawable Balance : Br. ${real_balance} \n 🎁 Non-Withdrawable balance : Br. ${bonus} \`\`\``,
-      {
-        parse_mode: "Markdown",
-        reply_markup: {
-          inline_keyboard: [
-            [
-              {
-                text: "▶️ Play",
-                web_app: {
-                  url: `https://google.com`,
-                },
-              },
-            ],
-          ],
-        },
+      if (rows2.length === 0) {
+        throw new Error("User not found");
       }
-    );
-  } catch (err) {
-    console.error("❌ Error updating winner's balance:", err.message);
-    throw err;
+
+      const currentBalance = rows2[0].bonus;
+      const newBalance = currentBalance + 3;
+
+      // Step 2: Update the balance
+      await pool.query(`UPDATE users SET bonus = ? WHERE user_id = ?`, [
+        newBalance,
+        r_id,
+      ]);
+
+      let balance = await get_balance_of_specific_user(r_id).catch(
+        console.error
+      );
+      let real_balance = balance[0].balance;
+      let bonus = balance[0].bonus;
+      bot.sendMessage(
+        r_id,
+        `You have received Br. 3 from your invite. \n\`\`\` 💰 Withdrawable Balance : Br. ${real_balance} \n 🎁 Non-Withdrawable balance : Br. ${bonus} \`\`\``,
+        {
+          parse_mode: "Markdown",
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: "▶️ Play",
+                  web_app: {
+                    url: `https://google.com`,
+                  },
+                },
+              ],
+            ],
+          },
+        }
+      );
+    } catch (err) {
+      console.error("❌ Error updating winner's balance:", err.message);
+      throw err;
+    }
+    // return rows;
   }
-  // return rows;
 }
 
 function deposit_first_step(c_id) {
