@@ -1,3 +1,19 @@
+const tg = window.Telegram.WebApp;
+
+// Telegram user info
+const userID = tg.initDataUnsafe?.user;
+// const userID = "353008986";
+// alert(userID.id);
+console.log(userID);
+let username = "";
+
+if (userID) {
+  username = userID.id.toString();
+  // alert(typeof username);
+} else {
+  username = "7052392258";
+}
+
 // Socket
 // const socket = new WebSocket("ws://192.168.1.5:3000");
 const socket = new WebSocket("ws://192.168.0.5:3000");
@@ -6,7 +22,7 @@ const socket = new WebSocket("ws://192.168.0.5:3000");
 // let username = "353008986";
 //   localStorage.removeItem('username')
 //   localStorage.setItem('username','7052392258')
-let username = localStorage.getItem("username") || "7094056144";
+// let username = localStorage.getItem("username") || "7094056144";
 // if(localStorage.getItem('username')){
 // username = localStorage.getItem('username');
 // }else{

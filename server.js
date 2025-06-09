@@ -2105,7 +2105,7 @@ bot.on("message", async (msg) => {
               {
                 text: "▶️ Play",
                 web_app: {
-                  url: `https://google.com`,
+                  url: `https://abogida.duckdns.org/`,
                 },
               },
             ],
@@ -2873,7 +2873,7 @@ async function reward_the_referrer(u_id) {
                 {
                   text: "▶️ Play",
                   web_app: {
-                    url: `https://google.com`,
+                    url: `https://abogida.duckdns.org/`,
                   },
                 },
               ],
