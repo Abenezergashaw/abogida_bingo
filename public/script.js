@@ -318,6 +318,11 @@ socket.addEventListener("message", (event) => {
         balls_5
       );
 
+      loadAndPlayAudio(
+        `https://abogida.duckdns.org/assets/${current_drawn_number_5}.m4a`,
+        `${current_drawn_number_5}`
+      );
+
       counter_5.textContent = data.counter_5 + "/75";
 
       document
