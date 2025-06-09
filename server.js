@@ -159,7 +159,7 @@ let timer_interval_1000 = null;
 let call_interval_1000 = null;
 let line_making_array_1000 = [];
 
-wss.on("connection", (ws) => {
+wss.on("connection", function connection(ws) {
   onlinePlayers.add(ws);
 
   ws.send(
