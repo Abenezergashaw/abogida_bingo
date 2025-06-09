@@ -16,7 +16,8 @@ if (userID) {
 
 // Socket
 // const socket = new WebSocket("ws://192.168.1.5:3000");
-const socket = new WebSocket("ws://192.168.0.5:3000");
+const socket = new WebSocket("ws://abogida.duck.dns/");
+// const socket = new WebSocket("ws://192.168.0.5:3000");
 
 // Later get from db
 // let username = "353008986";
