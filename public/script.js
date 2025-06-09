@@ -16,7 +16,7 @@ if (userID) {
 
 // Socket
 // const socket = new WebSocket("ws://192.168.1.5:3000");
-const socket = new WebSocket("ws://abogida.duck.dns/");
+const socket = new WebSocket("ws://abogida.duckdns.org/");
 // const socket = new WebSocket("ws://192.168.0.5:3000");
 
 // Later get from db
@@ -2372,7 +2372,7 @@ async function get_balance_of_user_when_starting_game(username) {
   try {
     console.log(username);
     const response = await fetch(
-      `http://localhost:3000/get_user_balance?u_id=${username}`
+      `http://abogida.duckdns.org/get_user_balance?u_id=${username}`
     );
     console.log("Response status:", response.status); // 👀 check this
 
