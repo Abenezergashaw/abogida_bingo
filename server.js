@@ -2586,8 +2586,13 @@ function create_games_table(games) {
 
 // Bot users
 async function create_new_user(user, c_id) {
-  try {
-    const sql = `
+  const [rows] = await pool.query(
+    "SELECT user_id FROM users WHERE user_id = ?",
+    [user.user_id]
+  );
+  if (rows.length === 0) {
+    try {
+      const sql = `
       INSERT INTO users (
         user_id,
         first_name,
@@ -2600,36 +2605,37 @@ async function create_new_user(user, c_id) {
       ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    const values = [
-      user.user_id,
-      user.first_name,
-      user.username,
-      user.phone_number,
-      user.balance,
-      user.bonus,
-      user.played_games,
-      user.won_games,
-    ];
+      const values = [
+        user.user_id,
+        user.first_name,
+        user.username,
+        user.phone_number,
+        user.balance,
+        user.bonus,
+        user.played_games,
+        user.won_games,
+      ];
 
-    await pool.query(sql, values);
+      await pool.query(sql, values);
 
-    bot
-      .sendMessage(
-        c_id,
-        `Welcome to *Chapa! Bingo*.\n\n\`\`\`You have received  Br. 10. \`\`\`  \`\`\`ENJOY!!!\`\`\``,
-        {
-          parse_mode: "Markdown",
-          reply_markup: {
-            remove_keyboard: true,
-          },
-        }
-      )
-      .then(() => {
-        creating_keyboard_buttons(c_id, true);
-      });
-  } catch (err) {
-    console.error("❌ Error inserting user:", err.message);
-    throw err;
+      bot
+        .sendMessage(
+          c_id,
+          `Welcome to *Chapa! Bingo*.\n\n\`\`\`You have received  Br. 10. \`\`\`  \`\`\`ENJOY!!!\`\`\``,
+          {
+            parse_mode: "Markdown",
+            reply_markup: {
+              remove_keyboard: true,
+            },
+          }
+        )
+        .then(() => {
+          creating_keyboard_buttons(c_id, true);
+        });
+    } catch (err) {
+      console.error("❌ Error inserting user:", err.message);
+      throw err;
+    }
   }
 }
 
