@@ -319,8 +319,8 @@ socket.addEventListener("message", (event) => {
       );
 
       loadAndPlayAudio(
-        `https://abogida.duckdns.org/assets/${current_drawn_number_5}.m4a`,
-        `${current_drawn_number_5}`
+        `https://abogida.duckdns.org/assets/${data.current_drawn_number_5}.m4a`,
+        `${data.current_drawn_number_5}`
       );
 
       counter_5.textContent = data.counter_5 + "/75";
