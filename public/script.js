@@ -1,17 +1,18 @@
-// const tg = window.Telegram.WebApp;
-// // Telegram user info
-// const userID = tg.initDataUnsafe?.user;
-// // const userID = "353008986";
-// // alert(userID.id);
-// // console.log(userID);
-let username = "7052392258";
+const tg = window.Telegram.WebApp;
 
-// if (userID) {
-//   username = userID.id.toString();
-//   // alert(typeof username);
-// } else {
-//   username = "7052392258";
-// }
+// Telegram user info
+const userID = tg.initDataUnsafe?.user;
+// const userID = "353008986";
+// alert(userID.id);
+// console.log(userID);
+let username = null;
+
+if (userID) {
+  username = userID.id.toString();
+  // alert(typeof username);
+} else {
+  username = "7052392258";
+}
 
 // Socket
 // const socket = new WebSocket("ws://192.168.1.5:3000");
