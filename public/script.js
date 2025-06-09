@@ -14,8 +14,11 @@ if (userID) {
   username = "7052392258";
 }
 
-document.getElementById("playButton").addEventListener("click", () => {
-  loadAndPlayAudio("https://abogida.duckdns.org/assets/start.m4a", "start");
+// document.getElementById("playButton").addEventListener("click", () => {
+//   loadAndPlayAudio("https://abogida.duckdns.org/assets/start.m4a", "start");
+// });
+window.addEventListener("load", () => {
+  preloadAllAudios();
 });
 
 // Socket
@@ -318,10 +321,7 @@ socket.addEventListener("message", (event) => {
         balls_5
       );
 
-      loadAndPlayAudio(
-        `https://abogida.duckdns.org/assets/${data.current_drawn_number_5}.m4a`,
-        `${data.current_drawn_number_5}`
-      );
+      playCachedAudio(`sound${data.current_drawn_number_5}`);
 
       counter_5.textContent = data.counter_5 + "/75";
 
