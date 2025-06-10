@@ -2619,7 +2619,7 @@ function create_games_table(games) {
     game.players.toString(),
     `Br. ${game.stake.toFixed(0)}`,
     `Br. ${(game.stake * game.players * 0.8).toFixed(0)}`,
-    game.winner && game.winner !== "0" ? get_first_name_user(game.winner) : "-",
+    game.winner && game.winner !== "0" ? game.winner : "-",
   ]);
 
   const columnWidths = headers.map((_, i) =>
