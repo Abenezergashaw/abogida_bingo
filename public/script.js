@@ -428,6 +428,11 @@ socket.addEventListener("message", async (event) => {
       );
       update_balance();
     }
+  }else if(data.type === 'only_one_player_5'){
+    let u = data.u;
+    if(u == username){
+      reload_page()
+    }
   }
 
   // Game 10 sockets

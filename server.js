@@ -1095,7 +1095,16 @@ function timer_5(seconds = 45) {
         });
         numbers_5 = generated_numbers_5();
         call_interval_5 = setInterval(broadcast_numbers_5, 4500);
-      } else {
+      }
+       else {
+        if(players_5.length == 1){
+          let u =  players_5[0].username;
+          broadcast({
+            type : 'only_one_player_5',
+            u
+          })
+          players_5 = []
+        }
         count = seconds;
       }
     }
