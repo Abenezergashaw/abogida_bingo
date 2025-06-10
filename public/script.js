@@ -1356,7 +1356,7 @@ function enter_game_5() {
       // setTimeout(() => {
       get_balance_of_user_when_starting_game(username);
       // }, 2000);
-      unlockAudioAutoplay();
+      unlockAudio();
     }
   }
 }

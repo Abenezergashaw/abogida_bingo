@@ -83,3 +83,19 @@ function unlockAudioAutoplay() {
   const emptyAudio = new Audio();
   emptyAudio.play().catch(() => {});
 }
+
+let audioUnlocked = false;
+
+function unlockAudio() {
+  if (audioUnlocked) return;
+
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const buffer = ctx.createBuffer(1, 1, 22050);
+  const source = ctx.createBufferSource();
+  source.buffer = buffer;
+  source.connect(ctx.destination);
+  source.start(0);
+  audioUnlocked = true;
+
+  console.log("✅ Audio unlocked");
+}
