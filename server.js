@@ -1084,7 +1084,7 @@ function timer_5(seconds = 45) {
     count--;
 
     if (count < 0) {
-      if (players_5.length > 0) {
+      if (players_5.length > 1) {
         new_game({ players: players_5.length, stake: 5 });
         clearInterval(timer_interval_5);
         active_game_5 = true;
@@ -1181,7 +1181,7 @@ function timer_10(seconds = 45) {
     count--;
 
     if (count < 0) {
-      if (players_10.length > 0) {
+      if (players_10.length > 1) {
         new_game({ players: players_10.length, stake: 10 });
         clearInterval(timer_interval_10);
         active_game_10 = true;
@@ -1278,7 +1278,7 @@ function timer_20(seconds = 45) {
     count--;
 
     if (count < 0) {
-      if (players_20.length > 0) {
+      if (players_20.length > 1) {
         new_game({ players: players_20.length, stake: 20 });
         clearInterval(timer_interval_20);
         active_game_20 = true;
@@ -1375,7 +1375,7 @@ function timer_50(seconds = 45) {
     count--;
 
     if (count < 0) {
-      if (players_50.length > 0) {
+      if (players_50.length > 1) {
         new_game({ players: players_50.length, stake: 50 });
         clearInterval(timer_interval_50);
         active_game_50 = true;
@@ -1471,7 +1471,7 @@ function timer_100(seconds = 45) {
     count--;
 
     if (count < 0) {
-      if (players_100.length > 0) {
+      if (players_100.length > 1) {
         new_game({ players: players_100.length, stake: 100 });
 
         clearInterval(timer_interval_100);
@@ -1568,7 +1568,7 @@ function timer_500(seconds = 45) {
     count--;
 
     if (count < 0) {
-      if (players_500.length > 0) {
+      if (players_500.length > 1) {
         new_game({ players: players_500.length, stake: 500 });
 
         clearInterval(timer_interval_500);
@@ -1669,7 +1669,7 @@ function timer_1000(seconds = 45) {
     count--;
 
     if (count < 0) {
-      if (players_1000.length > 0) {
+      if (players_1000.length > 1) {
         new_game({ players: players_1000.length, stake: 1000 });
 
         clearInterval(timer_interval_1000);
