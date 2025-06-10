@@ -41,8 +41,49 @@ const audioList = Array.from({ length: 76 }, (_, i) => ({
   key: `sound${i + 1}`,
 }));
 
+// async function preloadAllAudios() {
+//   const db = await openDB();
+
+//   for (const { url, key } of audioList) {
+//     const cachedBlob = await getAudioBlob(db, key);
+//     if (!cachedBlob) {
+//       try {
+//         const response = await fetch(url);
+//         if (!response.ok) throw new Error(`Failed to fetch ${url}`);
+//         const blob = await response.blob();
+//         await storeAudioBlob(db, key, blob);
+//         console.log(`Cached: ${key}`);
+//       } catch (e) {
+//         console.warn(`Error caching ${key}:`, e);
+//       }
+//     } else {
+//       console.log(`Already cached: ${key}`);
+//       // document.getElementById(
+//       //   "playButton"
+//       // ).textContent = `Already cached: ${key}`;
+//     }
+//   }
+// }
+
 async function preloadAllAudios() {
+  const modal = document.getElementById("loadingModal");
+  const loadingText = document.getElementById("loadingText");
   const db = await openDB();
+
+  // Check if all audios are already cached
+  let allCached = true;
+  for (const { key } of audioList) {
+    const blob = await getAudioBlob(db, key);
+    if (!blob) {
+      allCached = false;
+      break;
+    }
+  }
+
+  if (!allCached) {
+    modal.classList.remove("hidden");
+    loadingText.textContent = "Caching audio files...";
+  }
 
   for (const { url, key } of audioList) {
     const cachedBlob = await getAudioBlob(db, key);
@@ -58,12 +99,14 @@ async function preloadAllAudios() {
       }
     } else {
       console.log(`Already cached: ${key}`);
-      // document.getElementById(
-      //   "playButton"
-      // ).textContent = `Already cached: ${key}`;
     }
   }
+
+  // Hide modal when done
+  modal.classList.add("hidden");
 }
+
+
 
 // async function playCachedAudio(key) {
 //   const db = await openDB();
