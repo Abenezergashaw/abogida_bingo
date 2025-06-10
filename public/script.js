@@ -2421,11 +2421,11 @@ voice_5.addEventListener("click", ()=>{
   if(is_mute_5){
     is_mute_5 = false
     voice_5.textContent = '🔇';
-    alert('muted')
+    
   }else{
     is_mute_5 = true;
     voice_5.textContent = '📢';
-    alert('unmuted')
+  
 
   }
 })
