@@ -57,6 +57,8 @@ const playing_cartela_container_5 = document.querySelector(
   ".playing_cartela_section_5"
 );
 const counter_5 = document.querySelector(".counter_5");
+const voice_5 = document.querySelector('.voice_5')
+
 
 // Game 10 containers
 const registery_10 = document.querySelector(".registery_10");
@@ -65,6 +67,10 @@ const winner_10 = document.querySelector(".winner_10");
 const playing_cartela_container_10 = document.querySelector(
   ".playing_cartela_section_10"
 );
+const counter_10 = document.querySelector(".counter_10");
+const voice_10 = document.querySelector('.voice_10')
+
+
 
 // Game 20 containers
 const registery_20 = document.querySelector(".registery_20");
@@ -73,6 +79,9 @@ const winner_20 = document.querySelector(".winner_20");
 const playing_cartela_container_20 = document.querySelector(
   ".playing_cartela_section_20"
 );
+const counter_20 = document.querySelector(".counter_20");
+const voice_20 = document.querySelector('.voice_20')
+
 
 // Game 50 containers
 const registery_50 = document.querySelector(".registery_50");
@@ -81,6 +90,9 @@ const winner_50 = document.querySelector(".winner_50");
 const playing_cartela_container_50 = document.querySelector(
   ".playing_cartela_section_50"
 );
+const counter_50 = document.querySelector(".counter_50");
+const voice_50 = document.querySelector('.voice_50')
+
 
 // Game 100 containers
 const registery_100 = document.querySelector(".registery_100");
@@ -89,6 +101,9 @@ const winner_100 = document.querySelector(".winner_100");
 const playing_cartela_container_100 = document.querySelector(
   ".playing_cartela_section_100"
 );
+const counter_100 = document.querySelector(".counter_100");
+const voice_100 = document.querySelector('.voice_100')
+
 
 // Game 500 containers
 const registery_500 = document.querySelector(".registery_500");
@@ -97,6 +112,9 @@ const winner_500 = document.querySelector(".winner_500");
 const playing_cartela_container_500 = document.querySelector(
   ".playing_cartela_section_500"
 );
+const counter_500 = document.querySelector(".counter_500");
+const voice_500 = document.querySelector('.voice_500')
+
 
 // Game 1000 containers
 const registery_1000 = document.querySelector(".registery_1000");
@@ -105,7 +123,9 @@ const winner_1000 = document.querySelector(".winner_1000");
 const playing_cartela_container_1000 = document.querySelector(
   ".playing_cartela_section_1000"
 );
-const voice_5 = document.querySelector('.voice_5')
+const counter_1000 = document.querySelector(".counter_1000");
+const voice_1000 = document.querySelector('.voice_1000')
+
 
 // Game 5 variables
 let selected_card_5 = null;
@@ -117,31 +137,37 @@ let is_mute_5 = false;
 let selected_card_10 = null;
 let active_game_10 = true;
 let is_eligible_10 = false;
+let is_mute_10 = false;
 
 // Game 20 variables
 let selected_card_20 = null;
 let active_game_20 = true;
 let is_eligible_20 = false;
+let is_mute_20 = false;
 
 // Game 50 variables
 let selected_card_50 = null;
 let active_game_50 = true;
 let is_eligible_50 = false;
+let is_mute_50 = false;
 
 // Game 100 variables
 let selected_card_100 = null;
 let active_game_100 = true;
 let is_eligible_100 = false;
+let is_mute_100 = false;
 
 // Game 500 variables
 let selected_card_500 = null;
 let active_game_500 = true;
 let is_eligible_500 = false;
+let is_mute_500 = false;
 
 // Game 1000 variables
 let selected_card_1000 = null;
 let active_game_1000 = true;
 let is_eligible_1000 = false;
+let is_mute_1000 = false;
 
 // real_balance || bonus_balance > 10
 //   ? document.querySelector(".entry_10").classList.remove("opacity-60")
@@ -411,16 +437,14 @@ socket.addEventListener("message", async (event) => {
     let sent_username = data.username;
     let current_card = data.current_card;
     let new_card = data.new_card;
-    selected_card_10 = new_card;
-    console.log(selected_card_10);
     if (sent_username === username) {
       document
         .querySelector(`.card_10_${new_card}`)
         .classList.add("bg-green-200", "text-gray-800");
+      selected_card_10 = new_card;
+      console.log(selected_card_10);
     } else {
-      document
-        .querySelector(`.card_10_${new_card}`)
-        .classList.add("opacity-30");
+      document.querySelector(`.card_10_${new_card}`).classList.add("opacity-30");
     }
     if (current_card) {
       document
@@ -456,11 +480,19 @@ socket.addEventListener("message", async (event) => {
     if (player) {
       console.log("Number", data.current_drawn_number_10);
       animateCalling(
-        document.getElementById("call-container-10"),
+        document.getElementById("call-container-5"),
         data.current_drawn_number_10,
         "game_10_animate_balls",
         balls_10
       );
+      if (player.active) {
+        if(!is_mute_10){
+        await playCachedAudio(`sound${data.current_drawn_number_10}`);
+        }
+      }
+
+      counter_10.textContent = data.counter_10 + "/75";
+
       document
         .querySelector(`.ball_10_${data.current_drawn_number_10}`)
         .classList.add("bg-orange-500");
@@ -484,11 +516,15 @@ socket.addEventListener("message", async (event) => {
     check_user_balance_and_decide_which_game_he_can_play(
       parseInt(real_balance) + parseInt(bonus_balance)
     );
+
+    get_balance_of_user_when_starting_game(username);
     if (data.u == username) {
       update_balance();
     }
     let player = data.players_10.find((p) => p.username === username);
     document.querySelector(".game_started_flag_10").classList.add("hidden");
+
+    counter_10.textContent = "0/75";
 
     if (player && player.active) {
       let number = player.number;
@@ -500,6 +536,7 @@ socket.addEventListener("message", async (event) => {
         .querySelector(".continue_game_10")
         .addEventListener("click", () => {
           winner_10.classList.add("hidden");
+          // reload_page()
         });
     }
     document.querySelectorAll(".cards_10").forEach((c) => {
@@ -529,23 +566,22 @@ socket.addEventListener("message", async (event) => {
     }
   }
 
+
   // Game 20 socket messages
-  else if (data.type === "timer_20") {
+  if (data.type === "timer_20") {
     update_info_of_20(data.value, data.players);
   } else if (data.type === "new_card_selected_20") {
     let sent_username = data.username;
     let current_card = data.current_card;
     let new_card = data.new_card;
-    selected_card_20 = new_card;
-    console.log(selected_card_20);
     if (sent_username === username) {
       document
         .querySelector(`.card_20_${new_card}`)
         .classList.add("bg-green-200", "text-gray-800");
+      selected_card_20 = new_card;
+      console.log(selected_card_20);
     } else {
-      document
-        .querySelector(`.card_20_${new_card}`)
-        .classList.add("opacity-30");
+      document.querySelector(`.card_20_${new_card}`).classList.add("opacity-30");
     }
     if (current_card) {
       document
@@ -581,11 +617,19 @@ socket.addEventListener("message", async (event) => {
     if (player) {
       console.log("Number", data.current_drawn_number_20);
       animateCalling(
-        document.getElementById("call-container-20"),
+        document.getElementById("call-container-5"),
         data.current_drawn_number_20,
         "game_20_animate_balls",
         balls_20
       );
+      if (player.active) {
+        if(!is_mute_20){
+        await playCachedAudio(`sound${data.current_drawn_number_20}`);
+        }
+      }
+
+      counter_20.textContent = data.counter_20 + "/75";
+
       document
         .querySelector(`.ball_20_${data.current_drawn_number_20}`)
         .classList.add("bg-orange-500");
@@ -602,18 +646,22 @@ socket.addEventListener("message", async (event) => {
     }
   } else if (data.type === "bingo_20") {
     active_game_20 = data.active_game_20;
-    let total_balance = data.balance;
 
+    let total_balance = data.balance;
     real_balance = total_balance.balance;
     bonus_balance = total_balance.bonus;
     check_user_balance_and_decide_which_game_he_can_play(
       parseInt(real_balance) + parseInt(bonus_balance)
     );
+
+    get_balance_of_user_when_starting_game(username);
     if (data.u == username) {
       update_balance();
     }
     let player = data.players_20.find((p) => p.username === username);
     document.querySelector(".game_started_flag_20").classList.add("hidden");
+
+    counter_20.textContent = "0/75";
 
     if (player && player.active) {
       let number = player.number;
@@ -625,6 +673,7 @@ socket.addEventListener("message", async (event) => {
         .querySelector(".continue_game_20")
         .addEventListener("click", () => {
           winner_20.classList.add("hidden");
+          // reload_page()
         });
     }
     document.querySelectorAll(".cards_20").forEach((c) => {
@@ -654,23 +703,22 @@ socket.addEventListener("message", async (event) => {
     }
   }
 
+
   // Game 50 socket messages
-  else if (data.type === "timer_50") {
+  if (data.type === "timer_50") {
     update_info_of_50(data.value, data.players);
   } else if (data.type === "new_card_selected_50") {
     let sent_username = data.username;
     let current_card = data.current_card;
     let new_card = data.new_card;
-    selected_card_50 = new_card;
-    console.log(selected_card_50);
     if (sent_username === username) {
       document
         .querySelector(`.card_50_${new_card}`)
         .classList.add("bg-green-200", "text-gray-800");
+      selected_card_50 = new_card;
+      console.log(selected_card_50);
     } else {
-      document
-        .querySelector(`.card_50_${new_card}`)
-        .classList.add("opacity-30");
+      document.querySelector(`.card_50_${new_card}`).classList.add("opacity-30");
     }
     if (current_card) {
       document
@@ -706,11 +754,19 @@ socket.addEventListener("message", async (event) => {
     if (player) {
       console.log("Number", data.current_drawn_number_50);
       animateCalling(
-        document.getElementById("call-container-50"),
+        document.getElementById("call-container-5"),
         data.current_drawn_number_50,
         "game_50_animate_balls",
         balls_50
       );
+      if (player.active) {
+        if(!is_mute_50){
+        await playCachedAudio(`sound${data.current_drawn_number_50}`);
+        }
+      }
+
+      counter_50.textContent = data.counter_50 + "/75";
+
       document
         .querySelector(`.ball_50_${data.current_drawn_number_50}`)
         .classList.add("bg-orange-500");
@@ -727,19 +783,22 @@ socket.addEventListener("message", async (event) => {
     }
   } else if (data.type === "bingo_50") {
     active_game_50 = data.active_game_50;
-    let total_balance = data.balance;
 
+    let total_balance = data.balance;
     real_balance = total_balance.balance;
     bonus_balance = total_balance.bonus;
     check_user_balance_and_decide_which_game_he_can_play(
       parseInt(real_balance) + parseInt(bonus_balance)
     );
+
+    get_balance_of_user_when_starting_game(username);
     if (data.u == username) {
       update_balance();
     }
-
     let player = data.players_50.find((p) => p.username === username);
     document.querySelector(".game_started_flag_50").classList.add("hidden");
+
+    counter_50.textContent = "0/75";
 
     if (player && player.active) {
       let number = player.number;
@@ -751,6 +810,7 @@ socket.addEventListener("message", async (event) => {
         .querySelector(".continue_game_50")
         .addEventListener("click", () => {
           winner_50.classList.add("hidden");
+          // reload_page()
         });
     }
     document.querySelectorAll(".cards_50").forEach((c) => {
@@ -780,23 +840,22 @@ socket.addEventListener("message", async (event) => {
     }
   }
 
+
   // Game 100 socket messages
-  else if (data.type === "timer_100") {
+  if (data.type === "timer_100") {
     update_info_of_100(data.value, data.players);
   } else if (data.type === "new_card_selected_100") {
     let sent_username = data.username;
     let current_card = data.current_card;
     let new_card = data.new_card;
-    selected_card_100 = new_card;
-    console.log(selected_card_100);
     if (sent_username === username) {
       document
         .querySelector(`.card_100_${new_card}`)
         .classList.add("bg-green-200", "text-gray-800");
+      selected_card_100 = new_card;
+      console.log(selected_card_100);
     } else {
-      document
-        .querySelector(`.card_100_${new_card}`)
-        .classList.add("opacity-30");
+      document.querySelector(`.card_100_${new_card}`).classList.add("opacity-30");
     }
     if (current_card) {
       document
@@ -832,11 +891,19 @@ socket.addEventListener("message", async (event) => {
     if (player) {
       console.log("Number", data.current_drawn_number_100);
       animateCalling(
-        document.getElementById("call-container-100"),
+        document.getElementById("call-container-5"),
         data.current_drawn_number_100,
         "game_100_animate_balls",
         balls_100
       );
+      if (player.active) {
+        if(!is_mute_100){
+        await playCachedAudio(`sound${data.current_drawn_number_100}`);
+        }
+      }
+
+      counter_100.textContent = data.counter_100 + "/75";
+
       document
         .querySelector(`.ball_100_${data.current_drawn_number_100}`)
         .classList.add("bg-orange-500");
@@ -853,18 +920,22 @@ socket.addEventListener("message", async (event) => {
     }
   } else if (data.type === "bingo_100") {
     active_game_100 = data.active_game_100;
+
     let total_balance = data.balance;
-    console.log(total_balance);
     real_balance = total_balance.balance;
     bonus_balance = total_balance.bonus;
     check_user_balance_and_decide_which_game_he_can_play(
       parseInt(real_balance) + parseInt(bonus_balance)
     );
+
+    get_balance_of_user_when_starting_game(username);
     if (data.u == username) {
       update_balance();
     }
     let player = data.players_100.find((p) => p.username === username);
     document.querySelector(".game_started_flag_100").classList.add("hidden");
+
+    counter_100.textContent = "0/75";
 
     if (player && player.active) {
       let number = player.number;
@@ -876,6 +947,7 @@ socket.addEventListener("message", async (event) => {
         .querySelector(".continue_game_100")
         .addEventListener("click", () => {
           winner_100.classList.add("hidden");
+          // reload_page()
         });
     }
     document.querySelectorAll(".cards_100").forEach((c) => {
@@ -905,23 +977,22 @@ socket.addEventListener("message", async (event) => {
     }
   }
 
+
   // Game 500 socket messages
-  else if (data.type === "timer_500") {
+  if (data.type === "timer_500") {
     update_info_of_500(data.value, data.players);
   } else if (data.type === "new_card_selected_500") {
     let sent_username = data.username;
     let current_card = data.current_card;
     let new_card = data.new_card;
-    selected_card_500 = new_card;
-    console.log(selected_card_500);
     if (sent_username === username) {
       document
         .querySelector(`.card_500_${new_card}`)
         .classList.add("bg-green-200", "text-gray-800");
+      selected_card_500 = new_card;
+      console.log(selected_card_500);
     } else {
-      document
-        .querySelector(`.card_500_${new_card}`)
-        .classList.add("opacity-30");
+      document.querySelector(`.card_500_${new_card}`).classList.add("opacity-30");
     }
     if (current_card) {
       document
@@ -957,11 +1028,19 @@ socket.addEventListener("message", async (event) => {
     if (player) {
       console.log("Number", data.current_drawn_number_500);
       animateCalling(
-        document.getElementById("call-container-500"),
+        document.getElementById("call-container-5"),
         data.current_drawn_number_500,
         "game_500_animate_balls",
         balls_500
       );
+      if (player.active) {
+        if(!is_mute_500){
+        await playCachedAudio(`sound${data.current_drawn_number_500}`);
+        }
+      }
+
+      counter_500.textContent = data.counter_500 + "/75";
+
       document
         .querySelector(`.ball_500_${data.current_drawn_number_500}`)
         .classList.add("bg-orange-500");
@@ -978,18 +1057,22 @@ socket.addEventListener("message", async (event) => {
     }
   } else if (data.type === "bingo_500") {
     active_game_500 = data.active_game_500;
+
     let total_balance = data.balance;
-    console.log(total_balance);
     real_balance = total_balance.balance;
     bonus_balance = total_balance.bonus;
     check_user_balance_and_decide_which_game_he_can_play(
       parseInt(real_balance) + parseInt(bonus_balance)
     );
+
+    get_balance_of_user_when_starting_game(username);
     if (data.u == username) {
       update_balance();
     }
     let player = data.players_500.find((p) => p.username === username);
     document.querySelector(".game_started_flag_500").classList.add("hidden");
+
+    counter_500.textContent = "0/75";
 
     if (player && player.active) {
       let number = player.number;
@@ -1001,6 +1084,7 @@ socket.addEventListener("message", async (event) => {
         .querySelector(".continue_game_500")
         .addEventListener("click", () => {
           winner_500.classList.add("hidden");
+          // reload_page()
         });
     }
     document.querySelectorAll(".cards_500").forEach((c) => {
@@ -1030,23 +1114,22 @@ socket.addEventListener("message", async (event) => {
     }
   }
 
+
   // Game 1000 socket messages
-  else if (data.type === "timer_1000") {
+ if (data.type === "timer_1000") {
     update_info_of_1000(data.value, data.players);
   } else if (data.type === "new_card_selected_1000") {
     let sent_username = data.username;
     let current_card = data.current_card;
     let new_card = data.new_card;
-    selected_card_1000 = new_card;
-    console.log(selected_card_1000);
     if (sent_username === username) {
       document
         .querySelector(`.card_1000_${new_card}`)
         .classList.add("bg-green-200", "text-gray-800");
+      selected_card_1000 = new_card;
+      console.log(selected_card_1000);
     } else {
-      document
-        .querySelector(`.card_1000_${new_card}`)
-        .classList.add("opacity-30");
+      document.querySelector(`.card_1000_${new_card}`).classList.add("opacity-30");
     }
     if (current_card) {
       document
@@ -1071,9 +1154,7 @@ socket.addEventListener("message", async (event) => {
         el.textContent = "Active";
       });
     }
-    document
-      .querySelector(".game_started_flag_1000")
-      .classList.remove("hidden");
+    document.querySelector(".game_started_flag_1000").classList.remove("hidden");
     document.querySelector(".entry_1000_status").textContent = "Active";
     document.querySelectorAll(".cards_1000").forEach((c) => {
       c.classList.remove("opacity-30");
@@ -1084,11 +1165,19 @@ socket.addEventListener("message", async (event) => {
     if (player) {
       console.log("Number", data.current_drawn_number_1000);
       animateCalling(
-        document.getElementById("call-container-1000"),
+        document.getElementById("call-container-5"),
         data.current_drawn_number_1000,
         "game_1000_animate_balls",
         balls_1000
       );
+      if (player.active) {
+        if(!is_mute_1000){
+        await playCachedAudio(`sound${data.current_drawn_number_1000}`);
+        }
+      }
+
+      counter_1000.textContent = data.counter_1000 + "/75";
+
       document
         .querySelector(`.ball_1000_${data.current_drawn_number_1000}`)
         .classList.add("bg-orange-500");
@@ -1105,18 +1194,22 @@ socket.addEventListener("message", async (event) => {
     }
   } else if (data.type === "bingo_1000") {
     active_game_1000 = data.active_game_1000;
+
     let total_balance = data.balance;
-    console.log(total_balance);
     real_balance = total_balance.balance;
     bonus_balance = total_balance.bonus;
     check_user_balance_and_decide_which_game_he_can_play(
       parseInt(real_balance) + parseInt(bonus_balance)
     );
+
+    get_balance_of_user_when_starting_game(username);
     if (data.u == username) {
       update_balance();
     }
     let player = data.players_1000.find((p) => p.username === username);
     document.querySelector(".game_started_flag_1000").classList.add("hidden");
+
+    counter_1000.textContent = "0/75";
 
     if (player && player.active) {
       let number = player.number;
@@ -1128,6 +1221,7 @@ socket.addEventListener("message", async (event) => {
         .querySelector(".continue_game_1000")
         .addEventListener("click", () => {
           winner_1000.classList.add("hidden");
+          // reload_page()
         });
     }
     document.querySelectorAll(".cards_1000").forEach((c) => {
@@ -1156,6 +1250,9 @@ socket.addEventListener("message", async (event) => {
       update_balance();
     }
   }
+
+
+
 });
 
 let balls_5 = [];
@@ -1369,6 +1466,7 @@ function enter_game_5() {
 function enter_game_10() {
   console.log("Game state: ", active_game_10);
   if (selected_card_10 !== null) {
+    console.log("Seleeeetcted card: ", selected_card_10);
     if (!active_game_10) {
       socket.send(
         JSON.stringify({
@@ -1379,9 +1477,10 @@ function enter_game_10() {
       registery_10.classList.add("hidden");
       game_10.classList.remove("hidden");
       create_playing_cartela_10(cards[selected_card_10 - 1]);
-      setTimeout(() => {
-        get_balance_of_user_when_starting_game(username);
-      }, 2000);
+      // setTimeout(() => {
+      get_balance_of_user_when_starting_game(username);
+      // }, 2000);
+      unlockAudio();
     }
   }
 }
@@ -1389,6 +1488,7 @@ function enter_game_10() {
 function enter_game_20() {
   console.log("Game state: ", active_game_20);
   if (selected_card_20 !== null) {
+    console.log("Seleeeetcted card: ", selected_card_20);
     if (!active_game_20) {
       socket.send(
         JSON.stringify({
@@ -1399,9 +1499,10 @@ function enter_game_20() {
       registery_20.classList.add("hidden");
       game_20.classList.remove("hidden");
       create_playing_cartela_20(cards[selected_card_20 - 1]);
-      setTimeout(() => {
-        get_balance_of_user_when_starting_game(username);
-      }, 2000);
+      // setTimeout(() => {
+      get_balance_of_user_when_starting_game(username);
+      // }, 2000);
+      unlockAudio();
     }
   }
 }
@@ -1409,6 +1510,7 @@ function enter_game_20() {
 function enter_game_50() {
   console.log("Game state: ", active_game_50);
   if (selected_card_50 !== null) {
+    console.log("Seleeeetcted card: ", selected_card_50);
     if (!active_game_50) {
       socket.send(
         JSON.stringify({
@@ -1419,9 +1521,10 @@ function enter_game_50() {
       registery_50.classList.add("hidden");
       game_50.classList.remove("hidden");
       create_playing_cartela_50(cards[selected_card_50 - 1]);
-      setTimeout(() => {
-        get_balance_of_user_when_starting_game(username);
-      }, 2000);
+      // setTimeout(() => {
+      get_balance_of_user_when_starting_game(username);
+      // }, 2000);
+      unlockAudio();
     }
   }
 }
@@ -1429,6 +1532,7 @@ function enter_game_50() {
 function enter_game_100() {
   console.log("Game state: ", active_game_100);
   if (selected_card_100 !== null) {
+    console.log("Seleeeetcted card: ", selected_card_100);
     if (!active_game_100) {
       socket.send(
         JSON.stringify({
@@ -1439,9 +1543,10 @@ function enter_game_100() {
       registery_100.classList.add("hidden");
       game_100.classList.remove("hidden");
       create_playing_cartela_100(cards[selected_card_100 - 1]);
-      setTimeout(() => {
-        get_balance_of_user_when_starting_game(username);
-      }, 2000);
+      // setTimeout(() => {
+      get_balance_of_user_when_starting_game(username);
+      // }, 2000);
+      unlockAudio();
     }
   }
 }
@@ -1449,6 +1554,7 @@ function enter_game_100() {
 function enter_game_500() {
   console.log("Game state: ", active_game_500);
   if (selected_card_500 !== null) {
+    console.log("Seleeeetcted card: ", selected_card_500);
     if (!active_game_500) {
       socket.send(
         JSON.stringify({
@@ -1459,9 +1565,10 @@ function enter_game_500() {
       registery_500.classList.add("hidden");
       game_500.classList.remove("hidden");
       create_playing_cartela_500(cards[selected_card_500 - 1]);
-      setTimeout(() => {
-        get_balance_of_user_when_starting_game(username);
-      }, 2000);
+      // setTimeout(() => {
+      get_balance_of_user_when_starting_game(username);
+      // }, 2000);
+      unlockAudio();
     }
   }
 }
@@ -1469,6 +1576,7 @@ function enter_game_500() {
 function enter_game_1000() {
   console.log("Game state: ", active_game_1000);
   if (selected_card_1000 !== null) {
+    console.log("Seleeeetcted card: ", selected_card_1000);
     if (!active_game_1000) {
       socket.send(
         JSON.stringify({
@@ -1479,9 +1587,10 @@ function enter_game_1000() {
       registery_1000.classList.add("hidden");
       game_1000.classList.remove("hidden");
       create_playing_cartela_1000(cards[selected_card_1000 - 1]);
-      setTimeout(() => {
-        get_balance_of_user_when_starting_game(username);
-      }, 2000);
+      // setTimeout(() => {
+      get_balance_of_user_when_starting_game(username);
+      // }, 2000);
+      unlockAudio();
     }
   }
 }
@@ -1677,6 +1786,16 @@ function create_playing_cartela_5(c) {
     socket.send(
       JSON.stringify({
         type: "bingo_5",
+        number: c.id,
+        username,
+      })
+    );
+  });
+
+  document.querySelector(".refresh_5").addEventListener("click", () => {
+    socket.send(
+      JSON.stringify({
+        type: "refresh_5",
         number: c.id,
         username,
       })
@@ -2425,7 +2544,71 @@ voice_5.addEventListener("click", ()=>{
   }else{
     is_mute_5 = true;
     voice_5.textContent = '📢';
-  
+  }
+})
 
+voice_10.addEventListener("click", ()=>{
+  if(is_mute_10){
+    is_mute_10 = false
+    voice_10.textContent = '🔇';
+    
+  }else{
+    is_mute_10 = true;
+    voice_10.textContent = '📢';
+  }
+})
+
+voice_20.addEventListener("click", ()=>{
+  if(is_mute_20){
+    is_mute_20 = false
+    voice_20.textContent = '🔇';
+    
+  }else{
+    is_mute_20 = true;
+    voice_20.textContent = '📢';
+  }
+})
+
+voice_50.addEventListener("click", ()=>{
+  if(is_mute_50){
+    is_mute_50 = false
+    voice_50.textContent = '🔇';
+    
+  }else{
+    is_mute_50 = true;
+    voice_50.textContent = '📢';
+  }
+})
+
+voice_100.addEventListener("click", ()=>{
+  if(is_mute_100){
+    is_mute_100 = false
+    voice_100.textContent = '🔇';
+    
+  }else{
+    is_mute_100 = true;
+    voice_100.textContent = '📢';
+  }
+})
+
+voice_500.addEventListener("click", ()=>{
+  if(is_mute_500){
+    is_mute_500 = false
+    voice_500.textContent = '🔇';
+    
+  }else{
+    is_mute_500 = true;
+    voice_500.textContent = '📢';
+  }
+})
+
+voice_1000.addEventListener("click", ()=>{
+  if(is_mute_1000){
+    is_mute_1000 = false
+    voice_1000.textContent = '🔇';
+    
+  }else{
+    is_mute_1000 = true;
+    voice_1000.textContent = '📢';
   }
 })

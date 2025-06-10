@@ -373,13 +373,19 @@ wss.on("connection", function connection(ws) {
         let u = data.username;
         let n = data.number;
 
-        let html = return_winner_html_10(cards[n - 1], u);
+        let html = await return_winner_html_10(cards[n - 1], u);
 
         if (!html) {
           console.log(u + "Blocked");
           let balance = await update_balance_of_winner(u, 0).catch(
             console.error
           );
+
+          let user_blocked_10 = players_10.find((p) => p.username === u);
+          if (user_blocked_10) {
+            user_blocked_10.active = false;
+          }
+
           broadcast({
             type: "block_player_10",
             u,
@@ -410,6 +416,7 @@ wss.on("connection", function connection(ws) {
           }
         }
       }
+
 
       // game 20 socket messages
       else if (data.type === "selection_card_20") {
@@ -474,13 +481,20 @@ wss.on("connection", function connection(ws) {
       } else if (data.type === "bingo_20") {
         let u = data.username;
         let n = data.number;
-        let html = return_winner_html_20(cards[n - 1], u);
+
+        let html = await return_winner_html_20(cards[n - 1], u);
 
         if (!html) {
           console.log(u + "Blocked");
           let balance = await update_balance_of_winner(u, 0).catch(
             console.error
           );
+
+          let user_blocked_20 = players_20.find((p) => p.username === u);
+          if (user_blocked_20) {
+            user_blocked_20.active = false;
+          }
+
           broadcast({
             type: "block_player_20",
             u,
@@ -575,12 +589,20 @@ wss.on("connection", function connection(ws) {
       } else if (data.type === "bingo_50") {
         let u = data.username;
         let n = data.number;
-        let html = return_winner_html_50(cards[n - 1], u);
+
+        let html = await return_winner_html_50(cards[n - 1], u);
+
         if (!html) {
           console.log(u + "Blocked");
           let balance = await update_balance_of_winner(u, 0).catch(
             console.error
           );
+
+          let user_blocked_50 = players_50.find((p) => p.username === u);
+          if (user_blocked_50) {
+            user_blocked_50.active = false;
+          }
+
           broadcast({
             type: "block_player_50",
             u,
@@ -675,13 +697,20 @@ wss.on("connection", function connection(ws) {
       } else if (data.type === "bingo_100") {
         let u = data.username;
         let n = data.number;
-        let html = return_winner_html_100(cards[n - 1], u);
+
+        let html = await return_winner_html_100(cards[n - 1], u);
 
         if (!html) {
           console.log(u + "Blocked");
           let balance = await update_balance_of_winner(u, 0).catch(
             console.error
           );
+
+          let user_blocked_100 = players_100.find((p) => p.username === u);
+          if (user_blocked_100) {
+            user_blocked_100.active = false;
+          }
+
           broadcast({
             type: "block_player_100",
             u,
@@ -776,13 +805,20 @@ wss.on("connection", function connection(ws) {
       } else if (data.type === "bingo_500") {
         let u = data.username;
         let n = data.number;
-        let html = return_winner_html_500(cards[n - 1], u);
+
+        let html = await return_winner_html_500(cards[n - 1], u);
 
         if (!html) {
           console.log(u + "Blocked");
           let balance = await update_balance_of_winner(u, 0).catch(
             console.error
           );
+
+          let user_blocked_500 = players_500.find((p) => p.username === u);
+          if (user_blocked_500) {
+            user_blocked_500.active = false;
+          }
+
           broadcast({
             type: "block_player_500",
             u,
@@ -813,6 +849,8 @@ wss.on("connection", function connection(ws) {
           }
         }
       }
+
+
 
       // game 1000 socket messages
       else if (data.type === "selection_card_1000") {
@@ -877,12 +915,20 @@ wss.on("connection", function connection(ws) {
       } else if (data.type === "bingo_1000") {
         let u = data.username;
         let n = data.number;
-        let html = return_winner_html_1000(cards[n - 1], u);
+
+        let html = await return_winner_html_1000(cards[n - 1], u);
+
         if (!html) {
           console.log(u + "Blocked");
           let balance = await update_balance_of_winner(u, 0).catch(
             console.error
           );
+
+          let user_blocked_1000 = players_1000.find((p) => p.username === u);
+          if (user_blocked_1000) {
+            user_blocked_1000.active = false;
+          }
+
           broadcast({
             type: "block_player_1000",
             u,
@@ -913,6 +959,9 @@ wss.on("connection", function connection(ws) {
           }
         }
       }
+
+
+
     } catch (err) {
       console.error("Failed to parse message:", message, err.message);
     }
@@ -1192,8 +1241,8 @@ function broadcast_numbers_10() {
   }
 }
 
-function return_winner_html_10(c, u) {
-  let html = win_checking_logic(
+async function return_winner_html_10(c, u) {
+  let html = await win_checking_logic(
     c,
     drawn_numbers_10,
     u,
@@ -1202,7 +1251,11 @@ function return_winner_html_10(c, u) {
     10,
     current_drawn_number_10
   );
-  return html;
+  if (html) {
+    return html;
+  } else {
+    return null;
+  }
 }
 
 function game_end_10() {
@@ -1285,8 +1338,8 @@ function broadcast_numbers_20() {
   }
 }
 
-function return_winner_html_20(c, u) {
-  let html = win_checking_logic(
+async function return_winner_html_20(c, u) {
+  let html = await win_checking_logic(
     c,
     drawn_numbers_20,
     u,
@@ -1295,7 +1348,11 @@ function return_winner_html_20(c, u) {
     20,
     current_drawn_number_20
   );
-  return html;
+  if (html) {
+    return html;
+  } else {
+    return null;
+  }
 }
 
 function game_end_20() {
@@ -1378,8 +1435,8 @@ function broadcast_numbers_50() {
   }
 }
 
-function return_winner_html_50(c, u) {
-  let html = win_checking_logic(
+async function return_winner_html_50(c, u) {
+  let html = await win_checking_logic(
     c,
     drawn_numbers_50,
     u,
@@ -1388,7 +1445,11 @@ function return_winner_html_50(c, u) {
     50,
     current_drawn_number_50
   );
-  return html;
+  if (html) {
+    return html;
+  } else {
+    return null;
+  }
 }
 
 function game_end_50() {
@@ -1471,8 +1532,8 @@ function broadcast_numbers_100() {
   }
 }
 
-function return_winner_html_100(c, u) {
-  let html = win_checking_logic(
+async function return_winner_html_100(c, u) {
+  let html = await win_checking_logic(
     c,
     drawn_numbers_100,
     u,
@@ -1481,7 +1542,11 @@ function return_winner_html_100(c, u) {
     100,
     current_drawn_number_100
   );
-  return html;
+  if (html) {
+    return html;
+  } else {
+    return null;
+  }
 }
 
 function game_end_100() {
@@ -1564,8 +1629,8 @@ function broadcast_numbers_500() {
   }
 }
 
-function return_winner_html_500(c, u) {
-  let html = win_checking_logic(
+async function return_winner_html_500(c, u) {
+  let html = await win_checking_logic(
     c,
     drawn_numbers_500,
     u,
@@ -1574,7 +1639,11 @@ function return_winner_html_500(c, u) {
     500,
     current_drawn_number_500
   );
-  return html;
+  if (html) {
+    return html;
+  } else {
+    return null;
+  }
 }
 
 function game_end_500() {
@@ -1661,8 +1730,8 @@ function broadcast_numbers_1000() {
   }
 }
 
-function return_winner_html_1000(c, u) {
-  let html = win_checking_logic(
+async function return_winner_html_1000(c, u) {
+  let html = await win_checking_logic(
     c,
     drawn_numbers_1000,
     u,
@@ -1671,7 +1740,11 @@ function return_winner_html_1000(c, u) {
     1000,
     current_drawn_number_1000
   );
-  return html;
+  if (html) {
+    return html;
+  } else {
+    return null;
+  }
 }
 
 function game_end_1000() {
