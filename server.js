@@ -2611,12 +2611,8 @@ async function get_last_10_games_for_user(c_id) {
   console.log(create_games_table(rows));
 }
 
-
-
 function create_games_table(games) {
   const headers = ["ID", "P", "Stake", "Winning", "Winner"];
-
-
 
   const rows = games.map((game) => [
     game.id.toString(),
