@@ -2146,7 +2146,7 @@ async function return_stake_when_only_one_player(user_id, stake) {
     ]);
 
   
-    return data;
+    // return data;
   } catch (err) {
     console.error("❌ Error updating winner's balance:", err.message);
     throw err;
