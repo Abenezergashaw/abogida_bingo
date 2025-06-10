@@ -154,7 +154,7 @@ socket.addEventListener("open", () => {
   );
 });
 
-socket.addEventListener("message", (event) => {
+socket.addEventListener("message", async (event) => {
   const data = JSON.parse(event.data);
   // console.log(data);
   if (data.type === "infos") {
@@ -321,7 +321,7 @@ socket.addEventListener("message", (event) => {
         balls_5
       );
       if (player.active) {
-        playCachedAudio(`sound${data.current_drawn_number_5}`);
+        await playCachedAudio(`sound${data.current_drawn_number_5}`);
       }
 
       counter_5.textContent = data.counter_5 + "/75";

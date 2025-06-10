@@ -72,9 +72,11 @@ async function playCachedAudio(key) {
   }
 
   const audio = new Audio(URL.createObjectURL(blob));
-  audio.play().catch((e) => {
-    console.warn("Play failed:", e);
-  });
+  try {
+    await audio.play();
+  } catch (e) {
+    console.warn(`Failed to autoplay ${key}:`, e);
+  }
 }
 
 function unlockAudioAutoplay() {
