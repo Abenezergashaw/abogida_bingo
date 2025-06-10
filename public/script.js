@@ -320,8 +320,9 @@ socket.addEventListener("message", (event) => {
         "game_5_animate_balls",
         balls_5
       );
-
-      playCachedAudio(`sound${data.current_drawn_number_5}`);
+      if (player.active) {
+        playCachedAudio(`sound${data.current_drawn_number_5}`);
+      }
 
       counter_5.textContent = data.counter_5 + "/75";
 
@@ -355,6 +356,8 @@ socket.addEventListener("message", (event) => {
     }
     let player = data.players_5.find((p) => p.username === username);
     document.querySelector(".game_started_flag_5").classList.add("hidden");
+
+    counter_5.textContent = "0/75";
 
     if (player && player.active) {
       let number = player.number;
@@ -1353,6 +1356,7 @@ function enter_game_5() {
       // setTimeout(() => {
       get_balance_of_user_when_starting_game(username);
       // }, 2000);
+      unlockAudioAutoplay();
     }
   }
 }

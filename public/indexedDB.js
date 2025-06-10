@@ -76,3 +76,8 @@ async function playCachedAudio(key) {
     console.warn("Play failed:", e);
   });
 }
+
+function unlockAudioAutoplay() {
+  const emptyAudio = new Audio();
+  emptyAudio.play().catch(() => {});
+}
