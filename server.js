@@ -2613,17 +2613,17 @@ async function get_last_10_games_for_user(c_id) {
 
 
 
- function create_games_table(games) {
+function create_games_table(games) {
   const headers = ["ID", "P", "Stake", "Winning", "Winner"];
 
 
 
-  const rows = games.map(async (game) => [
+  const rows = games.map((game) => [
     game.id.toString(),
     game.players.toString(),
     `Br. ${game.stake.toFixed(0)}`,
     `Br. ${(game.stake * game.players * 0.8).toFixed(0)}`,
-    game.winner && game.winner !== "0" ? await get_first_name_user(game.winner) : "-",
+    game.winner && game.winner !== "0" ? game.winner : "-",
   ]);
 
   const columnWidths = headers.map((_, i) =>
