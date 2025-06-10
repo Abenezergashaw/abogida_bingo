@@ -105,11 +105,14 @@ const winner_1000 = document.querySelector(".winner_1000");
 const playing_cartela_container_1000 = document.querySelector(
   ".playing_cartela_section_1000"
 );
+const voice_5 = document.querySelector('.voice_5')
 
 // Game 5 variables
 let selected_card_5 = null;
 let active_game_5 = true;
 let is_eligible_5 = false;
+let is_mute_5 = false;
+
 // Game 10 variables
 let selected_card_10 = null;
 let active_game_10 = true;
@@ -321,7 +324,9 @@ socket.addEventListener("message", async (event) => {
         balls_5
       );
       if (player.active) {
+        if(!is_mute_5){
         await playCachedAudio(`sound${data.current_drawn_number_5}`);
+        }
       }
 
       counter_5.textContent = data.counter_5 + "/75";
@@ -2410,3 +2415,17 @@ get_balance_of_user_when_starting_game(username);
 function reload_page() {
   location.reload();
 }
+
+
+voice_5.addEventListener("click", ()=>{
+  if(is_mute_5){
+    is_mute_5 = false
+    voice_5.textContent = '🔇';
+    alert('muted')
+  }else{
+    is_mute_5 = true;
+    voice_5.textContent = '📢';
+    alert('unmuted')
+
+  }
+})
