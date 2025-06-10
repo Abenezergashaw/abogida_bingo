@@ -58,9 +58,9 @@ async function preloadAllAudios() {
       }
     } else {
       console.log(`Already cached: ${key}`);
-      document.getElementById(
-        "playButton"
-      ).textContent = `Already cached: ${key}`;
+      // document.getElementById(
+      //   "playButton"
+      // ).textContent = `Already cached: ${key}`;
     }
   }
 }
