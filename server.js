@@ -1076,7 +1076,7 @@ function broadcast(data) {
 }
 
 // Game 5 funs
-function timer_5(seconds = 15) {
+function timer_5(seconds = 45) {
   let count = seconds;
 
   timer_interval_5 = setInterval(() => {
@@ -1094,7 +1094,7 @@ function timer_5(seconds = 15) {
           active_game_5,
         });
         numbers_5 = generated_numbers_5();
-        call_interval_5 = setInterval(broadcast_numbers_5, 2500);
+        call_interval_5 = setInterval(broadcast_numbers_5, 4500);
       } else {
         count = seconds;
       }
@@ -1173,7 +1173,7 @@ function game_end_5() {
 }
 
 // Game 10 funs
-function timer_10(seconds = 15) {
+function timer_10(seconds = 45) {
   let count = seconds;
 
   timer_interval_10 = setInterval(() => {
@@ -1191,7 +1191,7 @@ function timer_10(seconds = 15) {
           active_game_10,
         });
         numbers_10 = generated_numbers_10();
-        call_interval_10 = setInterval(broadcast_numbers_10, 2500);
+        call_interval_10 = setInterval(broadcast_numbers_10, 4500);
       } else {
         count = seconds;
       }
@@ -1270,7 +1270,7 @@ function game_end_10() {
 }
 
 // Game 20 funs
-function timer_20(seconds = 15) {
+function timer_20(seconds = 45) {
   let count = seconds;
 
   timer_interval_20 = setInterval(() => {
@@ -1288,7 +1288,7 @@ function timer_20(seconds = 15) {
           active_game_20,
         });
         numbers_20 = generated_numbers_20();
-        call_interval_20 = setInterval(broadcast_numbers_20, 2500);
+        call_interval_20 = setInterval(broadcast_numbers_20, 4500);
       } else {
         count = seconds;
       }
@@ -1367,7 +1367,7 @@ function game_end_20() {
 }
 
 // Game 50 funs
-function timer_50(seconds = 15) {
+function timer_50(seconds = 45) {
   let count = seconds;
 
   timer_interval_50 = setInterval(() => {
@@ -1385,7 +1385,7 @@ function timer_50(seconds = 15) {
           active_game_50,
         });
         numbers_50 = generated_numbers_50();
-        call_interval_50 = setInterval(broadcast_numbers_50, 2500);
+        call_interval_50 = setInterval(broadcast_numbers_50, 4500);
       } else {
         count = seconds;
       }
@@ -1464,7 +1464,7 @@ function game_end_50() {
 }
 
 // Game 100 funs
-function timer_100(seconds = 15) {
+function timer_100(seconds = 45) {
   let count = seconds;
   timer_interval_100 = setInterval(() => {
     broadcast({ type: "timer_100", value: count, players: players_100.length });
@@ -1482,7 +1482,7 @@ function timer_100(seconds = 15) {
           active_game_100,
         });
         numbers_100 = generated_numbers_100();
-        call_interval_100 = setInterval(broadcast_numbers_100, 2500);
+        call_interval_100 = setInterval(broadcast_numbers_100,4500);
       } else {
         count = seconds;
       }
@@ -1561,7 +1561,7 @@ function game_end_100() {
 }
 
 // Game 500 funs
-function timer_500(seconds = 15) {
+function timer_500(seconds = 45) {
   let count = seconds;
   timer_interval_500 = setInterval(() => {
     broadcast({ type: "timer_500", value: count, players: players_500.length });
@@ -1579,7 +1579,7 @@ function timer_500(seconds = 15) {
           active_game_500,
         });
         numbers_500 = generated_numbers_500();
-        call_interval_500 = setInterval(broadcast_numbers_500, 2500);
+        call_interval_500 = setInterval(broadcast_numbers_500,4500);
       } else {
         count = seconds;
       }
@@ -1658,7 +1658,7 @@ function game_end_500() {
 }
 
 // Game 1000 funs
-function timer_1000(seconds = 15) {
+function timer_1000(seconds = 45) {
   let count = seconds;
   timer_interval_1000 = setInterval(() => {
     broadcast({
@@ -1680,7 +1680,7 @@ function timer_1000(seconds = 15) {
           active_game_1000,
         });
         numbers_1000 = generated_numbers_1000();
-        call_interval_1000 = setInterval(broadcast_numbers_1000, 2500);
+        call_interval_1000 = setInterval(broadcast_numbers_1000,4500);
       } else {
         count = seconds;
       }
@@ -2611,15 +2611,19 @@ async function get_last_10_games_for_user(c_id) {
   console.log(create_games_table(rows));
 }
 
-function create_games_table(games) {
+
+
+ function create_games_table(games) {
   const headers = ["ID", "P", "Stake", "Winning", "Winner"];
 
-  const rows = games.map((game) => [
+
+
+  const rows = games.map(async (game) => [
     game.id.toString(),
     game.players.toString(),
     `Br. ${game.stake.toFixed(0)}`,
     `Br. ${(game.stake * game.players * 0.8).toFixed(0)}`,
-    game.winner && game.winner !== "0" ? game.winner : "-",
+    game.winner && game.winner !== "0" ? await get_first_name_user(game.winner) : "-",
   ]);
 
   const columnWidths = headers.map((_, i) =>
