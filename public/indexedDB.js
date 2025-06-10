@@ -82,7 +82,7 @@ async function preloadAllAudios() {
 
   if (!allCached) {
     modal.classList.remove("hidden");
-    loadingText.textContent = "Caching audio files...";
+    // loadingText.textContent = "Caching audio files...";
   }
 
   for (const { url, key } of audioList) {
