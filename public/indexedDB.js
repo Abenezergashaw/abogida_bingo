@@ -62,40 +62,67 @@ async function preloadAllAudios() {
   }
 }
 
+// async function playCachedAudio(key) {
+//   const db = await openDB();
+//   const blob = await getAudioBlob(db, key);
+
+//   if (!blob) {
+//     console.error("Audio not cached:", key);
+//     return;
+//   }
+
+//   const audio = new Audio(URL.createObjectURL(blob));
+//   try {
+//     await audio.play();
+//   } catch (e) {
+//     console.warn(`Failed to autoplay ${key}:`, e);
+//   }
+// }
+
+// function unlockAudioAutoplay() {
+//   const emptyAudio = new Audio();
+//   emptyAudio.play().catch(() => {});
+// }
+
+// let audioUnlocked = false;
+
+// function unlockAudio() {
+//   if (audioUnlocked) return;
+
+//   const ctx = new (window.AudioContext || window.webkitAudioContext)();
+//   const buffer = ctx.createBuffer(1, 1, 22050);
+//   const source = ctx.createBufferSource();
+//   source.buffer = buffer;
+//   source.connect(ctx.destination);
+//   source.start(0);
+//   audioUnlocked = true;
+
+//   console.log("✅ Audio unlocked");
+// }
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
 async function playCachedAudio(key) {
   const db = await openDB();
   const blob = await getAudioBlob(db, key);
-
   if (!blob) {
     console.error("Audio not cached:", key);
     return;
   }
 
-  const audio = new Audio(URL.createObjectURL(blob));
-  try {
-    await audio.play();
-  } catch (e) {
-    console.warn(`Failed to autoplay ${key}:`, e);
-  }
-}
+  const arrayBuffer = await blob.arrayBuffer();
+  const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
 
-function unlockAudioAutoplay() {
-  const emptyAudio = new Audio();
-  emptyAudio.play().catch(() => {});
-}
+  const source = audioCtx.createBufferSource();
+  source.buffer = audioBuffer;
+  source.connect(audioCtx.destination);
+  source.start(0);
 
-let audioUnlocked = false;
+  console.log(`Playing ${key} via Web Audio API`);
+}
 
 function unlockAudio() {
-  if (audioUnlocked) return;
-
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const buffer = ctx.createBuffer(1, 1, 22050);
-  const source = ctx.createBufferSource();
-  source.buffer = buffer;
-  source.connect(ctx.destination);
-  source.start(0);
-  audioUnlocked = true;
-
-  console.log("✅ Audio unlocked");
+  audioCtx.resume().then(() => {
+    console.log("AudioContext resumed");
+  });
 }
