@@ -480,7 +480,7 @@ socket.addEventListener("message", async (event) => {
     if (player) {
       console.log("Number", data.current_drawn_number_10);
       animateCalling(
-        document.getElementById("call-container-5"),
+        document.getElementById("call-container-10"),
         data.current_drawn_number_10,
         "game_10_animate_balls",
         balls_10
@@ -617,7 +617,7 @@ socket.addEventListener("message", async (event) => {
     if (player) {
       console.log("Number", data.current_drawn_number_20);
       animateCalling(
-        document.getElementById("call-container-5"),
+        document.getElementById("call-container-20"),
         data.current_drawn_number_20,
         "game_20_animate_balls",
         balls_20
@@ -754,7 +754,7 @@ socket.addEventListener("message", async (event) => {
     if (player) {
       console.log("Number", data.current_drawn_number_50);
       animateCalling(
-        document.getElementById("call-container-5"),
+        document.getElementById("call-container-50"),
         data.current_drawn_number_50,
         "game_50_animate_balls",
         balls_50
@@ -891,7 +891,7 @@ socket.addEventListener("message", async (event) => {
     if (player) {
       console.log("Number", data.current_drawn_number_100);
       animateCalling(
-        document.getElementById("call-container-5"),
+        document.getElementById("call-container-100"),
         data.current_drawn_number_100,
         "game_100_animate_balls",
         balls_100
@@ -1028,7 +1028,7 @@ socket.addEventListener("message", async (event) => {
     if (player) {
       console.log("Number", data.current_drawn_number_500);
       animateCalling(
-        document.getElementById("call-container-5"),
+        document.getElementById("call-container-500"),
         data.current_drawn_number_500,
         "game_500_animate_balls",
         balls_500
@@ -1165,7 +1165,7 @@ socket.addEventListener("message", async (event) => {
     if (player) {
       console.log("Number", data.current_drawn_number_1000);
       animateCalling(
-        document.getElementById("call-container-5"),
+        document.getElementById("call-container-1000"),
         data.current_drawn_number_1000,
         "game_1000_animate_balls",
         balls_1000
