@@ -1202,6 +1202,14 @@ function timer_10(seconds = 45) {
         numbers_10 = generated_numbers_10();
         call_interval_10 = setInterval(broadcast_numbers_10, 4500);
       } else {
+        if(players_10.length == 1){
+          let u =  players_10[0].username;
+          broadcast({
+            type : 'only_one_player_10',
+            u
+          })
+          players_10 = []
+        }
         count = seconds;
       }
     }
@@ -1299,6 +1307,14 @@ function timer_20(seconds = 45) {
         numbers_20 = generated_numbers_20();
         call_interval_20 = setInterval(broadcast_numbers_20, 4500);
       } else {
+        if(players_20.length == 1){
+          let u =  players_20[0].username;
+          broadcast({
+            type : 'only_one_player_20',
+            u
+          })
+          players_20 = []
+        }
         count = seconds;
       }
     }
@@ -1396,6 +1412,14 @@ function timer_50(seconds = 45) {
         numbers_50 = generated_numbers_50();
         call_interval_50 = setInterval(broadcast_numbers_50, 4500);
       } else {
+        if(players_50.length == 1){
+          let u =  players_50[0].username;
+          broadcast({
+            type : 'only_one_player_50',
+            u
+          })
+          players_50 = []
+        }
         count = seconds;
       }
     }
@@ -1493,6 +1517,14 @@ function timer_100(seconds = 45) {
         numbers_100 = generated_numbers_100();
         call_interval_100 = setInterval(broadcast_numbers_100,4500);
       } else {
+        if(players_100.length == 1){
+          let u =  players_100[0].username;
+          broadcast({
+            type : 'only_one_player_100',
+            u
+          })
+          players_100 = []
+        }
         count = seconds;
       }
     }
@@ -1590,6 +1622,14 @@ function timer_500(seconds = 45) {
         numbers_500 = generated_numbers_500();
         call_interval_500 = setInterval(broadcast_numbers_500,4500);
       } else {
+        if(players_500.length == 1){
+          let u =  players_500[0].username;
+          broadcast({
+            type : 'only_one_player_500',
+            u
+          })
+          players_500 = []
+        }
         count = seconds;
       }
     }
@@ -1691,6 +1731,14 @@ function timer_1000(seconds = 45) {
         numbers_1000 = generated_numbers_1000();
         call_interval_1000 = setInterval(broadcast_numbers_1000,4500);
       } else {
+        if(players_1000.length == 1){
+          let u =  players_1000[0].username;
+          broadcast({
+            type : 'only_one_player_1000',
+            u
+          })
+          players_1000 = []
+        }
         count = seconds;
       }
     }

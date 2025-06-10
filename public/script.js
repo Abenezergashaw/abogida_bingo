@@ -569,6 +569,11 @@ socket.addEventListener("message", async (event) => {
       );
       update_balance();
     }
+  }else if(data.type === 'only_one_player_10'){
+    let u = data.u;
+    if(u == username){
+      reload_page()
+    }
   }
 
 
@@ -705,6 +710,11 @@ socket.addEventListener("message", async (event) => {
         parseInt(real_balance) + parseInt(bonus_balance)
       );
       update_balance();
+    }
+  }else if(data.type === 'only_one_player_20'){
+    let u = data.u;
+    if(u == username){
+      reload_page()
     }
   }
 
@@ -843,6 +853,11 @@ socket.addEventListener("message", async (event) => {
       );
       update_balance();
     }
+  }else if(data.type === 'only_one_player_50'){
+    let u = data.u;
+    if(u == username){
+      reload_page()
+    }
   }
 
 
@@ -979,6 +994,11 @@ socket.addEventListener("message", async (event) => {
         parseInt(real_balance) + parseInt(bonus_balance)
       );
       update_balance();
+    }
+  }else if(data.type === 'only_one_player_100'){
+    let u = data.u;
+    if(u == username){
+      reload_page()
     }
   }
 
@@ -1117,6 +1137,11 @@ socket.addEventListener("message", async (event) => {
       );
       update_balance();
     }
+  }else if(data.type === 'only_one_player_500'){
+    let u = data.u;
+    if(u == username){
+      reload_page()
+    }
   }
 
 
@@ -1253,6 +1278,11 @@ socket.addEventListener("message", async (event) => {
         parseInt(real_balance) + parseInt(bonus_balance)
       );
       update_balance();
+    }
+  }else if(data.type === 'only_one_player_1000'){
+    let u = data.u;
+    if(u == username){
+      reload_page()
     }
   }
 
