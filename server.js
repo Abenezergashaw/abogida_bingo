@@ -1103,6 +1103,7 @@ function timer_5(seconds = 45) {
             type : 'only_one_player_5',
             u
           })
+          return_stake_when_only_one_player(u,5)
           players_5 = []
         }
         count = seconds;
@@ -1208,6 +1209,8 @@ function timer_10(seconds = 45) {
             type : 'only_one_player_10',
             u
           })
+          return_stake_when_only_one_player(u,10)
+
           players_10 = []
         }
         count = seconds;
@@ -1313,6 +1316,8 @@ function timer_20(seconds = 45) {
             type : 'only_one_player_20',
             u
           })
+          return_stake_when_only_one_player(u,20)
+
           players_20 = []
         }
         count = seconds;
@@ -1418,6 +1423,8 @@ function timer_50(seconds = 45) {
             type : 'only_one_player_50',
             u
           })
+          return_stake_when_only_one_player(u,50)
+
           players_50 = []
         }
         count = seconds;
@@ -1523,6 +1530,8 @@ function timer_100(seconds = 45) {
             type : 'only_one_player_100',
             u
           })
+          return_stake_when_only_one_player(u,100)
+
           players_100 = []
         }
         count = seconds;
@@ -1628,6 +1637,8 @@ function timer_500(seconds = 45) {
             type : 'only_one_player_500',
             u
           })
+          return_stake_when_only_one_player(u,500)
+
           players_500 = []
         }
         count = seconds;
@@ -1737,6 +1748,8 @@ function timer_1000(seconds = 45) {
             type : 'only_one_player_1000',
             u
           })
+          return_stake_when_only_one_player(u,1000)
+
           players_1000 = []
         }
         count = seconds;
@@ -2109,6 +2122,37 @@ async function decrease_balance_of_user_when_start_game(user_id, stake) {
     throw err;
   }
 }
+
+async function return_stake_when_only_one_player(user_id, stake) {
+  try {
+    // Step 1: Get the current balance and bonus
+    const [rows] = await pool.query(
+      `SELECT  bonus FROM users WHERE user_id = ?`,
+      [user_id]
+    );
+
+    if (rows.length === 0) {
+      throw new Error("User not found");
+    }
+
+    // const currentBalance = rows[0].balance;
+    const currentBonus = rows[0].bonus + stake;
+    // const newBalance = currentBalance + stake;
+
+    // Step 2: Update the balance
+    await pool.query(`UPDATE users SET bonus = ? WHERE user_id = ?`, [
+      currentBonus,
+      user_id,
+    ]);
+
+  
+    return data;
+  } catch (err) {
+    console.error("❌ Error updating winner's balance:", err.message);
+    throw err;
+  }
+}
+
 
 async function update_balance_of_winner(user_id, win_amount) {
   try {
