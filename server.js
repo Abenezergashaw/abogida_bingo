@@ -3537,8 +3537,8 @@ function auto_telebirr_first(u_id, p, a) {
       console.log("BOT: Payment started!", result.payment_status);
       // you can reply back to user here
       let b = result.payment_status.data.total_amount;
-      bot.sendMessage(u_id, "Successful transaction Br. " + b.trim());
       update_bonus_when_user_deposit(u_id, parseInt(b.trim()));
+      bot.sendMessage(u_id, "Successful transaction Br. " + b.trim());
       get_balance_user(u_id, u_id);
     })
     .catch((err) => {
