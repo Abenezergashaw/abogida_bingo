@@ -3506,7 +3506,7 @@ function get_formatted_date() {
 
 async function get_todays_balance_admin(u_id) {
   const [rows] = await pool.query(
-    `SELECT players, stake FROM games WHERE DATE(date) = '${get_formatted_date}'`
+    `SELECT players, stake FROM games WHERE DATE(date) = '${get_formatted_date()}'`
   );
   if (rows.length == 0) {
     return 0;
