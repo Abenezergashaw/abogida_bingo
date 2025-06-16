@@ -3508,6 +3508,9 @@ async function get_todays_balance_admin(u_id) {
   const [rows] = await pool.query(
     `SELECT players, stake FROM games WHERE DATE(date) = '${get_formatted_date}'`
   );
+  if (rows.length == 0) {
+    return 0;
+  }
   let balance = 0;
   for (let i = 0; i < rows.length; i++) {
     balance += rows[i].players * rows[i].stake * 0.2;
