@@ -10,6 +10,8 @@ const { json } = require("stream/consumers");
 require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const { v4: uuidv4 } = require("uuid");
+const { brotliCompressSync } = require("zlib");
+const startPaymentFlow = require("./utils/paymentFlow");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,24 +27,24 @@ const wss = new WebSocketServer({ server });
 const bot = new TelegramBot(token, { polling: true });
 
 // MySQL connection setup
-// const pool = mysql.createPool({
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASSWORD,
-//   database: process.env.DB_NAME,
-//   waitForConnections: true,
-//   connectionLimit: 10,
-//   queueLimit: 0,
-// });
 const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "Ab@596919",
-  database: "bingo",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
 });
+// const pool = mysql.createPool({
+//   host: "localhost",
+//   user: "root",
+//   password: "Ab@596919",
+//   database: "bingo",
+//   waitForConnections: true,
+//   connectionLimit: 10,
+//   queueLimit: 0,
+// });
 
 //Routes
 app.get("/ping", (req, res) => {
@@ -63,6 +65,16 @@ app.get("/get_user_balance", async (req, res) => {
   } catch (error) {
     console.error("Error fetching user balance:", error);
     res.status(500).json({ error: "Internal Server Error" }); // ✅ handle errors
+  }
+});
+
+app.post("/start-payment", async (req, res) => {
+  try {
+    const result = await startPaymentFlow(req.body);
+    res.json(result);
+  } catch (err) {
+    console.error("Payment flow error:", err.message);
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -416,7 +428,6 @@ wss.on("connection", function connection(ws) {
           }
         }
       }
-
 
       // game 20 socket messages
       else if (data.type === "selection_card_20") {
@@ -850,8 +861,6 @@ wss.on("connection", function connection(ws) {
         }
       }
 
-
-
       // game 1000 socket messages
       else if (data.type === "selection_card_1000") {
         const username = ws.username;
@@ -959,9 +968,6 @@ wss.on("connection", function connection(ws) {
           }
         }
       }
-
-
-
     } catch (err) {
       console.error("Failed to parse message:", message, err.message);
     }
@@ -1095,16 +1101,15 @@ function timer_5(seconds = 45) {
         });
         numbers_5 = generated_numbers_5();
         call_interval_5 = setInterval(broadcast_numbers_5, 4500);
-      }
-       else {
-        if(players_5.length == 1){
-          let u =  players_5[0].username;
+      } else {
+        if (players_5.length == 1) {
+          let u = players_5[0].username;
           broadcast({
-            type : 'only_one_player_5',
-            u
-          })
-          return_stake_when_only_one_player(u,5)
-          players_5 = []
+            type: "only_one_player_5",
+            u,
+          });
+          return_stake_when_only_one_player(u, 5);
+          players_5 = [];
         }
         count = seconds;
       }
@@ -1203,15 +1208,15 @@ function timer_10(seconds = 45) {
         numbers_10 = generated_numbers_10();
         call_interval_10 = setInterval(broadcast_numbers_10, 4500);
       } else {
-        if(players_10.length == 1){
-          let u =  players_10[0].username;
+        if (players_10.length == 1) {
+          let u = players_10[0].username;
           broadcast({
-            type : 'only_one_player_10',
-            u
-          })
-          return_stake_when_only_one_player(u,10)
+            type: "only_one_player_10",
+            u,
+          });
+          return_stake_when_only_one_player(u, 10);
 
-          players_10 = []
+          players_10 = [];
         }
         count = seconds;
       }
@@ -1310,15 +1315,15 @@ function timer_20(seconds = 45) {
         numbers_20 = generated_numbers_20();
         call_interval_20 = setInterval(broadcast_numbers_20, 4500);
       } else {
-        if(players_20.length == 1){
-          let u =  players_20[0].username;
+        if (players_20.length == 1) {
+          let u = players_20[0].username;
           broadcast({
-            type : 'only_one_player_20',
-            u
-          })
-          return_stake_when_only_one_player(u,20)
+            type: "only_one_player_20",
+            u,
+          });
+          return_stake_when_only_one_player(u, 20);
 
-          players_20 = []
+          players_20 = [];
         }
         count = seconds;
       }
@@ -1417,15 +1422,15 @@ function timer_50(seconds = 45) {
         numbers_50 = generated_numbers_50();
         call_interval_50 = setInterval(broadcast_numbers_50, 4500);
       } else {
-        if(players_50.length == 1){
-          let u =  players_50[0].username;
+        if (players_50.length == 1) {
+          let u = players_50[0].username;
           broadcast({
-            type : 'only_one_player_50',
-            u
-          })
-          return_stake_when_only_one_player(u,50)
+            type: "only_one_player_50",
+            u,
+          });
+          return_stake_when_only_one_player(u, 50);
 
-          players_50 = []
+          players_50 = [];
         }
         count = seconds;
       }
@@ -1522,17 +1527,17 @@ function timer_100(seconds = 45) {
           active_game_100,
         });
         numbers_100 = generated_numbers_100();
-        call_interval_100 = setInterval(broadcast_numbers_100,4500);
+        call_interval_100 = setInterval(broadcast_numbers_100, 4500);
       } else {
-        if(players_100.length == 1){
-          let u =  players_100[0].username;
+        if (players_100.length == 1) {
+          let u = players_100[0].username;
           broadcast({
-            type : 'only_one_player_100',
-            u
-          })
-          return_stake_when_only_one_player(u,100)
+            type: "only_one_player_100",
+            u,
+          });
+          return_stake_when_only_one_player(u, 100);
 
-          players_100 = []
+          players_100 = [];
         }
         count = seconds;
       }
@@ -1629,17 +1634,17 @@ function timer_500(seconds = 45) {
           active_game_500,
         });
         numbers_500 = generated_numbers_500();
-        call_interval_500 = setInterval(broadcast_numbers_500,4500);
+        call_interval_500 = setInterval(broadcast_numbers_500, 4500);
       } else {
-        if(players_500.length == 1){
-          let u =  players_500[0].username;
+        if (players_500.length == 1) {
+          let u = players_500[0].username;
           broadcast({
-            type : 'only_one_player_500',
-            u
-          })
-          return_stake_when_only_one_player(u,500)
+            type: "only_one_player_500",
+            u,
+          });
+          return_stake_when_only_one_player(u, 500);
 
-          players_500 = []
+          players_500 = [];
         }
         count = seconds;
       }
@@ -1740,17 +1745,17 @@ function timer_1000(seconds = 45) {
           active_game_1000,
         });
         numbers_1000 = generated_numbers_1000();
-        call_interval_1000 = setInterval(broadcast_numbers_1000,4500);
+        call_interval_1000 = setInterval(broadcast_numbers_1000, 4500);
       } else {
-        if(players_1000.length == 1){
-          let u =  players_1000[0].username;
+        if (players_1000.length == 1) {
+          let u = players_1000[0].username;
           broadcast({
-            type : 'only_one_player_1000',
-            u
-          })
-          return_stake_when_only_one_player(u,1000)
+            type: "only_one_player_1000",
+            u,
+          });
+          return_stake_when_only_one_player(u, 1000);
 
-          players_1000 = []
+          players_1000 = [];
         }
         count = seconds;
       }
@@ -2145,14 +2150,12 @@ async function return_stake_when_only_one_player(user_id, stake) {
       user_id,
     ]);
 
-  
     // return data;
   } catch (err) {
     console.error("❌ Error updating winner's balance:", err.message);
     throw err;
   }
 }
-
 
 async function update_balance_of_winner(user_id, win_amount) {
   try {
@@ -2211,11 +2214,20 @@ function message_delete_function(u_id, m_id) {
   bot.deleteMessage(u_id, m_id);
 }
 
+// Global bot variables
+cbe_account = "1000185229207";
+cbe_name = "Abenezer Gashaw";
+
 // Conversation states
 const receive_amount_telebirr = {};
 const receive_phone_number_for_telebirr = {};
 const phone_number_for_telebirr = {};
 const w_receive_amount_telebirr = {};
+const d_recieve_name_cbe_account = {};
+const d_full_name_cbe = {};
+const d_recieve_amount_cbe = {};
+const d_auto_receive_amount_telebirr = {};
+const d_auto_phone_number = {};
 // Bot
 bot.onText(/\/start(?:\s+(.+))?/, async (msg, match) => {
   const u_id = msg.from.id.toString();
@@ -2335,6 +2347,9 @@ bot.on("message", async (msg) => {
 
       start_withdrwal_process(u_id);
       break;
+    case "A d m i n":
+      create_admin_buttons(u_id);
+      break;
   }
 
   // Converstation states
@@ -2409,6 +2424,39 @@ bot.on("message", async (msg) => {
       });
     }
   }
+
+  // 4. Receiving name of cbe bank account holder
+  if (d_recieve_name_cbe_account[u_id]) {
+    d_recieve_amount_cbe[u_id] = false;
+    turn_off_converstation_states(u_id);
+    if (/^[A-Za-z\s]+$/.test(text)) {
+      d_full_name_cbe[u_id] = text;
+      d_second_step_bank(u_id);
+    } else {
+      bot.sendMessage(u_id, "Invalid character found. Please try again. 123");
+    }
+  }
+
+  // 5. Receiveing amount to deposit via cbe
+  if (d_recieve_amount_cbe[u_id]) {
+    turn_off_converstation_states(u_id);
+    if (/^\d+$/.test(text.trim())) {
+      d_third_step_bank(u_id, text, "CBE");
+    } else {
+      bot.sendMessage(u_id, "Invalid character found. Please try again.900");
+    }
+  }
+
+  // Addis pay deposit via telebirr
+  if (d_auto_receive_amount_telebirr[u_id]) {
+    turn_off_converstation_states(u_id);
+    if (/^\d+$/.test(text.trim())) {
+      auto_telebirr_first(u_id, d_auto_phone_number[u_id], text);
+      d_auto_phone_number[u_id] = "";
+    } else {
+      bot.sendMessage(u_id, "Invalid character found. Please try again.900");
+    }
+  }
 });
 
 // Call back
@@ -2432,10 +2480,7 @@ bot.on("callback_query", async (query) => {
       d_first_step_telebirr(c_id, u_id);
       break;
     case data === "d_first_step_cbe":
-      bot.sendMessage(
-        c_id,
-        "CBE not working at the moment. Please use TELEBIRR until it is fixed."
-      );
+      d_first_step_bank(c_id, u_id, "CBE");
       break;
     case data.startsWith("keep_telebirr_phone_number_"):
       message_delete_function(u_id, m_id);
@@ -2519,6 +2564,90 @@ bot.on("callback_query", async (query) => {
           get_balance_user(w_u_id_telebirr, w_u_id_telebirr);
         });
       });
+      break;
+    case data === "manual_start":
+      bot.sendMessage(c_id, "Choose Method: ", {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: "Telebirr ",
+                callback_data: "d_first_step_telebirr",
+              },
+              // {
+              //   text: "CBE",
+              //   callback_data: "d_first_step_cbe",
+              // },
+            ],
+          ],
+        },
+      });
+      break;
+    case data === "d_automatic_first_step":
+      bot.sendMessage(c_id, "Choose Method: ", {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: "Telebirr",
+                callback_data: "d_auto_telebirr_first",
+              },
+              {
+                text: "CBE Birr",
+                callback_data: "d_auto_cbe_first",
+              },
+            ],
+          ],
+        },
+      });
+      break;
+    case data === "d_auto_telebirr_first":
+      // auto_telebirr_first(u_id);
+      let p = await get_phone_number_user(u_id);
+      bot.sendMessage(c_id, `Choose number `, {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: `${p}`,
+                callback_data: `auto_keep_telebirr_phone_number_${p}`,
+              },
+            ],
+            [
+              {
+                text: "Change Number",
+                callback_data: "change_telebirr_phone_number",
+              },
+            ],
+          ],
+        },
+      });
+      break;
+    case data.startsWith("auto_keep_telebirr_phone_number_"):
+      const auto_telebirr_number = data.replace(
+        "auto_keep_telebirr_phone_number_",
+        ""
+      );
+      turn_off_converstation_states(u_id);
+      d_auto_receive_amount_telebirr[u_id] = true;
+      d_auto_phone_number[u_id] = auto_telebirr_number;
+      console.log(d_auto_phone_number, "alsdksaldk");
+      bot.sendMessage(u_id, "Enter amount you want to deposit...");
+
+      break;
+
+    // Admin
+    case data === "todays_balance":
+      let t_b = await get_todays_balance_admin(u_id);
+      bot.sendMessage(u_id, `Balance for today: Br. ${t_b}`);
+      break;
+    case data === "custom_balance":
+      let c_b = await get_custom_balance_admin(
+        u_id,
+        "2025-06-08",
+        "2025-06-09"
+      );
+      bot.sendMessage(u_id, `Balance for dates: Br. ${c_b}`);
       break;
   }
 });
@@ -2929,6 +3058,7 @@ function creating_keyboard_buttons(c_id, new_user) {
   const user_keyboard_buttons = {
     reply_markup: {
       keyboard: [
+        ["A d m i n"],
         ["▶️ Play", "📋 Rules"],
         ["💰 Balance"],
         ["📥 Deposit", "📤 Withdraw"],
@@ -3066,14 +3196,11 @@ function deposit_first_step(c_id) {
       parse_mode: "Markdown",
       reply_markup: {
         inline_keyboard: [
+          [{ text: "Addis Pay", callback_data: "d_automatic_first_step" }],
           [
             {
-              text: "Telebirr ",
-              callback_data: "d_first_step_telebirr",
-            },
-            {
-              text: "CBE",
-              callback_data: "d_first_step_cbe",
+              text: "Manual",
+              callback_data: "manual_start",
             },
           ],
         ],
@@ -3176,6 +3303,9 @@ function d_fourth_step_telebirr(
 function turn_off_converstation_states(u_id) {
   receive_amount_telebirr[u_id] = false;
   receive_phone_number_for_telebirr[u_id] = false;
+  d_recieve_name_cbe_account[u_id] = false;
+  d_recieve_amount_cbe[u_id] = false;
+  d_auto_receive_amount_telebirr[u_id] = false;
 }
 
 // Withdraw functions
@@ -3289,6 +3419,132 @@ async function w_third_step_telebirr(u_id, amount) {
         bot.sendMessage(u_id, "We are reviewing the transaction. Please wait.");
       });
   });
+}
+
+function d_first_step_bank(c_id, u_id, bank) {
+  // d_recieve_name_cbe_account[u_id] = true;
+  // bot.sendMessage(c_id, `Please send full name of the account of ${bank} bank you are sending from...`)
+  bot.sendMessage(
+    c_id,
+    "CBE not working at the moment. Please use TELEBIRR until it is fixed."
+  );
+}
+
+function d_second_step_bank(u_id) {
+  d_recieve_amount_cbe[u_id] = true;
+  bot.sendMessage(u_id, `Send the amount you want to deposit...`);
+}
+
+function d_third_step_bank(u_id, amount, method) {
+  bot.sendMessage(
+    u_id,
+    `Order created successfully!!!\n\n Method: ${method}\n\nName: ${d_full_name_cbe[u_id]}\n\nAmount: Br. ${amount} \n\n ------------- \n\nPlease send Br. ${amount} to:\n\n Name: ${cbe_name}\n\n Account No: ${cbe_account}\n\nAfter payment only please press the confirm button below...`,
+    {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: "Confirm paymnet",
+              callback_data: "con",
+            },
+          ],
+        ],
+      },
+    }
+  );
+}
+
+function create_admin_buttons(u_id) {
+  bot.sendMessage(u_id, "A d m i n", {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: "Today's balance",
+            callback_data: "todays_balance",
+          },
+          {
+            text: "Custom balance",
+            callback_data: "custom_balance",
+          },
+        ],
+        [
+          {
+            text: "Users",
+            callback_data: "users",
+          },
+          {
+            text: "Games",
+            callback_data: "games",
+          },
+        ],
+        [
+          {
+            text: "Total deposits of the day",
+            callback_data: "total_deposots_today",
+          },
+        ],
+        [
+          {
+            text: "Total withdraws of the day",
+            callback_data: "total_withdraws_today",
+          },
+        ],
+      ],
+    },
+  });
+}
+
+async function get_todays_balance_admin(u_id) {
+  const [rows] = await pool.query(
+    `SELECT players, stake FROM games WHERE DATE(date) = '2025-06-09'`
+  );
+  let balance = 0;
+  for (let i = 0; i < rows.length; i++) {
+    balance += rows[i].players * rows[i].stake * 0.2;
+  }
+
+  console.log(balance);
+  return balance; // array of rows with players and stake
+}
+
+async function get_custom_balance_admin(u_id, d1, d2) {
+  const [rows] = await pool.query(
+    `SELECT players, stake FROM games WHERE DATE(date) BETWEEN ? AND ?`,
+    [d1, d2]
+  );
+  let balance = 0;
+  for (let i = 0; i < rows.length; i++) {
+    balance += rows[i].players * rows[i].stake * 0.2;
+  }
+
+  console.log(rows);
+  return balance;
+}
+
+function auto_telebirr_first(u_id, p, a) {
+  console.log("ppp", p);
+  const userPhone = p; // Extract from msg
+  const amount = a;
+  const merchant = "Abenezer";
+
+  startPaymentFlow({
+    phone_number: userPhone,
+    total_amount: amount,
+    merchant_name: merchant,
+  })
+    .then((result) => {
+      console.log("BOT: Payment started!", result.payment_status);
+      // you can reply back to user here
+      let b = result.payment_status.data.total_amount;
+      bot.sendMessage(u_id, "Successful transaction Br. " + b.trim());
+      update_bonus_when_user_deposit(u_id, parseInt(b.trim()));
+      get_balance_user(u_id, u_id);
+    })
+    .catch((err) => {
+      console.error("BOT: Payment error", err);
+      bot.sendMessage(u_id, "Payment failed. Try again.");
+    });
 }
 
 app.use(express.static("public")); // or your frontend path
