@@ -3495,9 +3495,18 @@ function create_admin_buttons(u_id) {
   });
 }
 
+function get_formatted_date() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const day = String(now.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
 async function get_todays_balance_admin(u_id) {
   const [rows] = await pool.query(
-    `SELECT players, stake FROM games WHERE DATE(date) = '2025-06-09'`
+    `SELECT players, stake FROM games WHERE DATE(date) = '${get_formatted_date}'`
   );
   let balance = 0;
   for (let i = 0; i < rows.length; i++) {
