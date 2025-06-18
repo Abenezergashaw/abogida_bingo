@@ -6,7 +6,7 @@ const { WebSocketServer } = require("ws");
 const { type } = require("os");
 const cards = require("./cards.json");
 const mysql = require("mysql2/promise");
-const { json } = require("stream/consumers");
+const { json, text } = require("stream/consumers");
 require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const { v4: uuidv4 } = require("uuid");
@@ -27,24 +27,24 @@ const wss = new WebSocketServer({ server });
 const bot = new TelegramBot(token, { polling: true });
 
 // MySQL connection setup
-// const pool = mysql.createPool({
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASSWORD,
-//   database: process.env.DB_NAME,
-//   waitForConnections: true,
-//   connectionLimit: 10,
-//   queueLimit: 0,
-// });
 const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "Ab@596919",
-  database: "bingo",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
 });
+// const pool = mysql.createPool({
+//   host: "localhost",
+//   user: "root",
+//   password: "Ab@596919",
+//   database: "bingo",
+//   waitForConnections: true,
+//   connectionLimit: 10,
+//   queueLimit: 0,
+// });
 
 //Routes
 app.get("/ping", (req, res) => {
@@ -2218,6 +2218,8 @@ function message_delete_function(u_id, m_id) {
 cbe_account = "1000185229207";
 cbe_name = "Abenezer Gashaw";
 
+const adminId = '353008986';
+
 // Conversation states
 const receive_amount_telebirr = {};
 const receive_phone_number_for_telebirr = {};
@@ -2228,6 +2230,12 @@ const d_full_name_cbe = {};
 const d_recieve_amount_cbe = {};
 const d_auto_receive_amount_telebirr = {};
 const d_auto_phone_number = {};
+const d_receive_text_manual_bank = {};
+const d_manual_bank_amount_admin = {};
+const search_user_admin = {};
+const user_to_depoist = {}
+const depositSessions = {}; 
+
 // Bot
 bot.onText(/\/start(?:\s+(.+))?/, async (msg, match) => {
   const u_id = msg.from.id.toString();
@@ -2447,6 +2455,93 @@ bot.on("message", async (msg) => {
     }
   }
 
+  // Manual bank boa and cbe
+  if (d_receive_text_manual_bank[u_id]) {
+    turn_off_converstation_states(u_id);
+    user_to_depoist[u_id] = u_id;
+    bot.sendMessage(
+      "353008986",
+      `${text.trim()} \n\nMessage from userID: ${u_id}`,{
+        reply_markup:{
+          inline_keyboard:[
+            [
+              {
+                text:`Deposit from ${u_id}. Approve?`,
+                callback_data:'approve_deposit_bank'
+              }
+            ]
+          ]
+        }
+      }
+    );
+  }
+
+  if (receive_amount_telebirr[u_id]) {
+    
+    if (/^\d+$/.test(text.trim())) {
+      turn_off_converstation_states(u_id)
+      update_bonus_when_user_deposit(u_id, text)
+    }
+  }
+
+
+// From chat gpt
+const session = depositSessions[u_id];
+  if (session === "awaiting_cbe" || session === "awaiting_boa") {
+    let parsed;
+    if (session === "awaiting_cbe") parsed = parseCbeSms(text);
+    if (session === "awaiting_boa") parsed = parseBoaSms(text);
+
+    if (!parsed.amount || !parsed.reference) {
+      await bot.sendMessage(u_id,"🚫 Failed to parse the message. Please try again or contact support.");
+      return;
+    }
+
+const alreadyExists = await is_transaction_id_used(parsed.reference);
+
+if (alreadyExists) {
+  await bot.sendMessage(u_id,"🚫 This transaction reference has already been used.");
+  depositSessions[u_id] = null;
+  return;
+
+}
+
+
+
+    depositSessions[u_id] = null;
+
+    const summary = `💰 New Deposit Request
+🏦 Bank: ${parsed.bank}
+👤 User ID: ${u_id}
+💵 Amount: ETB ${parsed.amount}
+📄 Ref: ${parsed.reference}`;
+
+    // Send to admin
+    await bot.sendMessage(adminId, summary, {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: "✅ Confirm",
+              callback_data: `approve_${parsed.bank}_${u_id}_${parsed.amount}_${parsed.reference}`,
+            },
+            {
+              text: "❌ Reject",
+              callback_data: `reject_${u_id}`,
+            },
+          ],
+        ],
+      },
+    });
+
+    await bot.sendMessage(u_id,"✅ We've received your message. Await admin review.");
+  depositSessions[u_id] = null;
+
+  }
+  
+
+
+
   // Addis pay deposit via telebirr
   if (d_auto_receive_amount_telebirr[u_id]) {
     turn_off_converstation_states(u_id);
@@ -2574,10 +2669,18 @@ bot.on("callback_query", async (query) => {
                 text: "Telebirr ",
                 callback_data: "d_first_step_telebirr",
               },
-              // {
-              //   text: "CBE",
-              //   callback_data: "d_first_step_cbe",
-              // },
+            ],
+            [
+              {
+                text: "CBE",
+                callback_data: "deposit_cbe",
+              },
+            ],
+            [ 
+              {
+                text: "Abysinia Bank",
+                callback_data: "deposit_boa",
+              },
             ],
           ],
         },
@@ -2636,6 +2739,77 @@ bot.on("callback_query", async (query) => {
 
       break;
 
+    case data === "d_first_step_bank_cbe":
+      manual_bank_deposit_bank(u_id, "CBE", "1000475610664");
+      break;
+    case data === "d_first_step_bank_boa":
+      manual_bank_deposit_bank(u_id, "BOA", "168286813");
+      break;
+    case data === "confirm_manual_bank_payment":
+      d_receive_text_manual_bank[u_id] = true;
+      bot.sendMessage(
+        u_id,
+        "Please send me the message you have received from the bank..."
+      );
+      break;
+      case data === 'deposit_cbe':
+        depositSessions[u_id] = "awaiting_cbe";
+    await bot.sendMessage(u_id,`\nየ CBE አካውንት
+ 1000475610664 - Fanuel Dessie
+
+\`\`\`መመሪያ
+1. ከላይ ባለው የ CBE አካውንት ገንዘቡን ያስገቡ
+2. ብሩን ስትልኩ የከፈላችሁበትን መረጃ የያዝ አጭር የጹሁፍ መልክት(sms) ከ CBE ይደርሳችኋል
+3. የደረሳችሁን አጭር የጹሁፍ መለክት(sms) ሙሉዉን ኮፒ(copy) ካደረጋችሁ በኃላ confirm ሚለውን በመንካት ከታች ባለው የቴሌግራም የጹሁፍ ማስገቢአው ላይ ፔስት(paste) በማረግ ይላኩት \`\`\`
+
+`,{
+  parse_mode:'Markdown'
+});
+        break;
+case data === 'deposit_boa':
+        depositSessions[u_id] = "awaiting_boa";
+    await bot.sendMessage(u_id,`\nየ BOA አካውንት
+ 168286813 - Fanuel Dessie
+
+\`\`\`መመሪያ
+1. ከላይ ባለው የ BOA አካውንት ገንዘቡን ያስገቡ
+2. ብሩን ስትልኩ የከፈላችሁበትን መረጃ የያዝ አጭር የጹሁፍ መልክት(sms) ከ BOA ይደርሳችኋል
+3. የደረሳችሁን አጭር የጹሁፍ መለክት(sms) ሙሉዉን ኮፒ(copy) ካደረጋችሁ በኃላ confirm ሚለውን በመንካት ከታች ባለው የቴሌግራም የጹሁፍ ማስገቢአው ላይ ፔስት(paste) በማረግ ይላኩት \`\`\`
+
+`,{
+  parse_mode:'Markdown'
+});
+        break;
+case data.startsWith('approve_'):
+  const [, bank, userId, amount, reference] = data.split("_");
+    console.log(`Confirmed: ${bank} | ${userId} | ETB ${ parseFloat(amount.replace(/[^0-9.]/g, ""))} | Ref: ${reference}`);
+    create_a_transaction(userId, parseFloat(amount.replace(/[^0-9.]/g, "")),'d',bank,reference,'success')
+
+    update_bonus_when_user_deposit(userId,  parseFloat(amount.replace(/[^0-9.]/g, "")))
+
+    setTimeout(async() => {
+      let balance = await get_balance_of_specific_user(userId).catch(console.error);
+  
+        await bot.sendMessage(
+      userId,
+      `✅ Your deposit of ETB ${amount} via ${bank} has been approved.  \`\`\` 💰 Withdrawable Balance : Br. ${balance[0].balance} \n 🎁 Non-Withdrawable balance : Br. ${balance[0].bonus} \`\`\``,
+      {
+        parse_mode: "Markdown",
+        
+      }
+    );
+  }, 1500);
+
+    await bot.sendMessage(u_id,`✅ Confirmed ETB ${ parseFloat(amount.replace(/[^0-9.]/g, ""))} deposit for user ${userId}`);
+    // await bot.sendMessage(userId, `✅ Your deposit of ETB ${amount} via ${bank} has been approved.`);
+  break;
+
+  case data.startsWith('reject_'):
+      const [, userIdd] = data.split("_");
+    await bot.sendMessage(u_id,`❌ Rejected deposit for user ${userIdd}`);
+    await bot.sendMessage(userIdd, `❌ Your deposit request was rejected by admin.`);
+  break;
+
     // Admin
     case data === "todays_balance":
       let t_b = await get_todays_balance_admin(u_id);
@@ -2648,6 +2822,16 @@ bot.on("callback_query", async (query) => {
         "2025-06-09"
       );
       bot.sendMessage(u_id, `Balance for dates: Br. ${c_b}`);
+      break;
+
+    case data === "user_deposit_admin":
+      search_user_admin[u_id] = true;
+      bot.sendMessage(u_id, "Enter user ID...");
+      break;
+
+      case data === 'approve_deposit_bank':
+        d_manual_bank_amount_admin[u_id] = true;
+        bot.sendMessage(u_id,'Enter amount...')
       break;
   }
 });
@@ -2684,6 +2868,10 @@ function send_rules(c_id) {
 
 async function get_balance_user(c_id, u_id) {
   let balance = await get_balance_of_specific_user(u_id).catch(console.error);
+  if (!balance || balance.length === 0) {
+    console.warn("No balance data found");
+    return 0; // or handle however appropriate
+  }
   let real_balance = balance[0].balance;
   let bonus = balance[0].bonus;
   bot.sendMessage(
@@ -2796,7 +2984,14 @@ function create_transactions_table(transactions) {
   return "```\n" + table + "\n```";
 }
 
-async function create_a_transaction(u_id, amount, type, method, txn_id) {
+async function create_a_transaction(
+  u_id,
+  amount,
+  type,
+  method,
+  txn_id,
+  status
+) {
   try {
     const sql = `
         INSERT INTO transactions (
@@ -2809,7 +3004,7 @@ async function create_a_transaction(u_id, amount, type, method, txn_id) {
         ) VALUES (?,?,?,?,?,?)
       `;
 
-    await pool.query(sql, [txn_id, u_id, amount, type, method, "pending"]);
+    await pool.query(sql, [txn_id, u_id, amount, type, method, status]);
 
     console.log("Created transaction successfully");
   } catch (err) {
@@ -3247,7 +3442,7 @@ async function d_second_step_telebirr(phone_number, u_id) {
 async function d_third_step_telebirr(c_id, phone_number, text, u_id) {
   let txn_id = generate_transaction_id();
 
-  await create_a_transaction(u_id, text, "d", "telebirr", txn_id);
+  await create_a_transaction(u_id, text, "d", "telebirr", txn_id, "pending");
 
   bot.sendMessage(
     c_id,
@@ -3397,7 +3592,14 @@ async function w_third_step_telebirr(u_id, amount) {
   let f_name = await get_first_name_user(u_id);
   let txn_id = generate_transaction_id();
 
-  await create_a_transaction(u_id, amount, "w", "telebirr", txn_id).then(() => {
+  await create_a_transaction(
+    u_id,
+    amount,
+    "w",
+    "telebirr",
+    txn_id,
+    "pending"
+  ).then(() => {
     bot
       .sendMessage(
         "353008986",
@@ -3466,6 +3668,16 @@ function create_admin_buttons(u_id) {
           {
             text: "Custom balance",
             callback_data: "custom_balance",
+          },
+        ],
+        [
+          {
+            text: "User deposit",
+            callback_data: "user_deposit_admin",
+          },
+          {
+            text: "User withdraw",
+            callback_data: "user_withdraw_admin",
           },
         ],
         [
@@ -3548,16 +3760,88 @@ function auto_telebirr_first(u_id, p, a) {
     .then((result) => {
       console.log("BOT: Payment started!", result.payment_status);
       // you can reply back to user here
+      console.log("UUID: ", result.uuid);
       let b = result.payment_status.data.total_amount;
-      update_bonus_when_user_deposit(u_id, parseInt(b.trim()));
-      bot.sendMessage(u_id, "Successful transaction Br. " + b.trim());
-      get_balance_user(u_id, u_id);
+      update_bonus_when_user_deposit(u_id, parseInt(b.trim())).then(() => {
+        bot.sendMessage(u_id, "Successful transaction Br. " + b.trim());
+        get_balance_user(u_id, u_id);
+        create_a_transaction(
+          u_id,
+          b.trim(),
+          "d",
+          "telebirr",
+          result.uuid,
+          "success"
+        );
+      });
     })
     .catch((err) => {
       console.error("BOT: Payment error", err);
       bot.sendMessage(u_id, "Payment failed. Try again.");
     });
 }
+
+// Manual bank deposit
+function manual_bank_deposit_bank(u_id, bank, account) {
+  bot.sendMessage(
+    u_id,
+    `\nየ ${bank} አካውንት
+${account} - Fanuel Dessie
+
+\`\`\`መመሪያ
+1. ከላይ ባለው የ ${bank} አካውንት ገንዘቡን ያስገቡ
+2. ብሩን ስትልኩ የከፈላችሁበትን መረጃ የያዝ አጭር የጹሁፍ መልክት(sms) ከ ${bank} ይደርሳችኋል
+3. የደረሳችሁን አጭር የጹሁፍ መለክት(sms) ሙሉዉን ኮፒ(copy) ካደረጋችሁ በኃላ confirm ሚለውን በመንካት ከታች ባለው የቴሌግራም የጹሁፍ ማስገቢአው ላይ ፔስት(paste) በማረግ ይላኩት \`\`\`
+
+`,
+    {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: "Confirm",
+              callback_data: "confirm_manual_bank_payment",
+            },
+          ],
+        ],
+      },
+    }
+  );
+}
+
+
+function parseCbeSms(text) {
+  const amountMatch = text.match(/debited with ETB([\d,\.]+)/);
+  const refMatch = text.match(/https:\/\/apps\.cbe\.com\.et:100\/\?id=([A-Za-z0-9]+)/);
+  return {
+    bank: "CBE",
+    amount: amountMatch?.[1] || "N/A",
+    reference: refMatch?.[1] || "N/A",
+  };
+}
+
+function parseBoaSms(text) {
+  const amountMatch = text.match(/debited with ETB\s?([\d,\.]+)/);
+  const refMatch = text.match(/trx=([A-Za-z0-9]+)/);
+  return {
+    bank: "BOA",
+    amount: amountMatch?.[1] || "N/A",
+    reference: refMatch?.[1] || "N/A",
+  };
+}
+
+
+async function is_transaction_id_used(txn_id) {
+  const [rows] = await pool.query(
+    "SELECT 1 FROM transactions WHERE txn_id = ? LIMIT 1",
+    [txn_id]
+  );
+  console.log("Transaction Exists:", rows.length > 0);
+  return rows.length > 0; // true = already exists
+}
+
+
 
 app.use(express.static("public")); // or your frontend path
 
