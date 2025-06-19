@@ -2218,7 +2218,7 @@ function message_delete_function(u_id, m_id) {
 cbe_account = "1000185229207";
 cbe_name = "Abenezer Gashaw";
 
-const adminId = '353008986';
+const adminId = "353008986";
 
 // Conversation states
 const receive_amount_telebirr = {};
@@ -2233,8 +2233,9 @@ const d_auto_phone_number = {};
 const d_receive_text_manual_bank = {};
 const d_manual_bank_amount_admin = {};
 const search_user_admin = {};
-const user_to_depoist = {}
-const depositSessions = {}; 
+const user_to_depoist = {};
+const depositSessions = {};
+const withdrawSessions = {};
 
 // Bot
 bot.onText(/\/start(?:\s+(.+))?/, async (msg, match) => {
@@ -2461,90 +2462,92 @@ bot.on("message", async (msg) => {
     user_to_depoist[u_id] = u_id;
     bot.sendMessage(
       "353008986",
-      `${text.trim()} \n\nMessage from userID: ${u_id}`,{
-        reply_markup:{
-          inline_keyboard:[
+      `${text.trim()} \n\nMessage from userID: ${u_id}`,
+      {
+        reply_markup: {
+          inline_keyboard: [
             [
               {
-                text:`Deposit from ${u_id}. Approve?`,
-                callback_data:'approve_deposit_bank'
-              }
-            ]
-          ]
-        }
+                text: `Deposit from ${u_id}. Approve?`,
+                callback_data: "approve_deposit_bank",
+              },
+            ],
+          ],
+        },
       }
     );
   }
 
   if (receive_amount_telebirr[u_id]) {
-    
     if (/^\d+$/.test(text.trim())) {
-      turn_off_converstation_states(u_id)
-      update_bonus_when_user_deposit(u_id, text)
+      turn_off_converstation_states(u_id);
+      update_bonus_when_user_deposit(u_id, text);
     }
   }
 
-
-// From chat gpt
-const session = depositSessions[u_id];
+  // From chat gpt
+  const session = depositSessions[u_id];
   if (session === "awaiting_cbe" || session === "awaiting_boa") {
     let parsed;
     if (session === "awaiting_cbe") parsed = parseCbeSms(text);
     if (session === "awaiting_boa") parsed = parseBoaSms(text);
 
     if (!parsed.amount || !parsed.reference) {
-      await bot.sendMessage(u_id,"🚫 Invalid SMS message. Please try again or contach support.");
+      await bot.sendMessage(
+        u_id,
+        "🚫 Invalid SMS message. Please try again or contach support."
+      );
       return;
     }
 
-const alreadyExists = await is_transaction_id_used(parsed.reference);
+    const alreadyExists = await is_transaction_id_used(parsed.reference);
 
-if (alreadyExists) {
-  await bot.sendMessage(u_id,"🚫 This transaction reference has already been used.");
-  depositSessions[u_id] = null;
-  return;
+    if (alreadyExists) {
+      await bot.sendMessage(
+        u_id,
+        "🚫 This transaction reference has already been used."
+      );
+      depositSessions[u_id] = null;
+      return;
+    }
+    if (parseFloat(parsed.amount.replace(/[^0-9.]/g, "")) < 10) {
+      await bot.sendMessage(u_id, "🚫 Minimum deposit amount Br. 10.");
+      depositSessions[u_id] = null;
+      return;
+    } else {
+      depositSessions[u_id] = null;
 
-}
-if(parseFloat(parsed.amount.replace(/[^0-9.]/g, "")) < 10 ){
-  await bot.sendMessage(u_id,"🚫 Minimum deposit amount Br. 10.");
-  depositSessions[u_id] = null;
-  return;
-}else{
-
-
-    depositSessions[u_id] = null;
-
-    const summary = `💰 New Deposit Request
+      const summary = `💰 New Deposit Request
 🏦 Bank: ${parsed.bank}
 👤 User ID: ${u_id}
 💵 Amount: ETB ${parsed.amount}
 📄 Ref: ${parsed.reference}`;
 
-    // Send to admin
-    await bot.sendMessage(adminId, summary, {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            {
-              text: "✅ Confirm",
-              callback_data: `approve_${parsed.bank}_${u_id}_${parsed.amount}_${parsed.reference}`,
-            },
-            {
-              text: "❌ Reject",
-              callback_data: `reject_${u_id}`,
-            },
+      // Send to admin
+      await bot.sendMessage(adminId, summary, {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: "✅ Confirm",
+                callback_data: `approve_${parsed.bank}_${u_id}_${parsed.amount}_${parsed.reference}`,
+              },
+              {
+                text: "❌ Reject",
+                callback_data: `reject_${u_id}`,
+              },
+            ],
           ],
-        ],
-      },
-    });
+        },
+      });
 
-    await bot.sendMessage(u_id,"✅ We've received your message. Await admin review.");
-  depositSessions[u_id] = null;
-
+      await bot.sendMessage(
+        u_id,
+        "✅ We've received your message. Await admin review."
+      );
+      depositSessions[u_id] = null;
+    }
   }
-}
-
-
 
   // Addis pay deposit via telebirr
   if (d_auto_receive_amount_telebirr[u_id]) {
@@ -2554,6 +2557,95 @@ if(parseFloat(parsed.amount.replace(/[^0-9.]/g, "")) < 10 ){
       d_auto_phone_number[u_id] = "";
     } else {
       bot.sendMessage(u_id, "Invalid character found. Please try again.900");
+    }
+  }
+
+  // WIthdraw banks
+  // Get current session
+  const w_session = withdrawSessions[u_id];
+
+  // No w_session, skip
+  if (!w_session) return;
+
+  // Step 1: Account number
+  if (w_session.step === 1) {
+    const isValidAccount = /^\d{5,14}$/.test(text);
+    if (!isValidAccount) {
+      await bot.sendMessage(
+        u_id,
+        "❌ Invalid account number. Please try again."
+      );
+      return;
+    }
+    w_session.account = text;
+    w_session.step = 2;
+    await bot.sendMessage(u_id, "Please enter the account holder's full name:");
+    return;
+  }
+
+  // Step 2: Name
+  if (w_session.step === 2) {
+    const isValidName = /^[A-Za-z\s]{2,50}$/.test(text);
+    if (!isValidName) {
+      await bot.sendMessage(u_id, "❌ Invalid name. Please try again.");
+      return;
+    }
+    w_session.name = text;
+    w_session.step = 3;
+    await bot.sendMessage(u_id, "Please enter the amount to withdraw:");
+    return;
+  }
+
+  // Step 3: Amount
+  if (w_session.step === 3) {
+    const cleanAmount = text.replace(/,/g, "");
+    const amount = parseFloat(cleanAmount);
+
+    let balance = await get_balance_of_specific_user(u_id).catch(console.error);
+    let real_balance = balance[0].balance;
+    if (amount > real_balance) {
+      bot.sendMessage(u_id, "Not enough balance to withdraw.", {
+        parse_mode: "Markdown",
+      });
+      withdrawSessions[u_id] = null;
+    } else {
+      if (isNaN(amount) || amount <= 50) {
+        await bot.sendMessage(u_id, "❌ Invalid amount. Should be > Br. 50.");
+        return;
+      }
+
+      w_session.amount = amount;
+      w_session.step = 4;
+
+      // Notify user
+      await bot.sendMessage(
+        u_id,
+        "✅ Withdrawal request received. Please wait for confirmation."
+      );
+      console.log("Bank: ", w_session.bankk);
+      // Notify admin
+      const summary = `🔁 New Withdrawal Request
+🏦 Bank: ${w_session.bankk}
+👤 User ID: ${u_id}
+📥 Account: ${w_session.account}
+👤 Name: ${w_session.name}
+💵 Amount: ETB ${amount}`;
+
+      await bot.sendMessage(adminId, summary, {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: "✅ Confirm",
+                callback_data: `confirm_withdraw_${w_session.bankk}_${u_id}_${w_session.account}_${w_session.name}_${amount}`,
+              },
+            ],
+          ],
+        },
+      });
+
+      // Clear w_session
+      withdrawSessions[u_id] = null;
     }
   }
 });
@@ -2680,7 +2772,7 @@ bot.on("callback_query", async (query) => {
                 callback_data: "deposit_cbe",
               },
             ],
-            [ 
+            [
               {
                 text: "Abysinia Bank",
                 callback_data: "deposit_boa",
@@ -2756,9 +2848,11 @@ bot.on("callback_query", async (query) => {
         "Please send me the message you have received from the bank..."
       );
       break;
-      case data === 'deposit_cbe':
-        depositSessions[u_id] = "awaiting_cbe";
-    await bot.sendMessage(u_id,`\nየ CBE አካውንት
+    case data === "deposit_cbe":
+      depositSessions[u_id] = "awaiting_cbe";
+      await bot.sendMessage(
+        u_id,
+        `\nየ CBE አካውንት
  1000475610664 - Fanuel Dessie
 
 \`\`\`መመሪያ
@@ -2766,13 +2860,17 @@ bot.on("callback_query", async (query) => {
 2. ብሩን ስትልኩ የከፈላችሁበትን መረጃ የያዝ አጭር የጹሁፍ መልክት(sms) ከ CBE ይደርሳችኋል
 3. የደረሳችሁን አጭር የጹሁፍ መለክት(sms) ሙሉዉን ኮፒ(copy) ካደረጋችሁ በኃላ confirm ሚለውን በመንካት ከታች ባለው የቴሌግራም የጹሁፍ ማስገቢአው ላይ ፔስት(paste) በማረግ ይላኩት \`\`\`
 
-`,{
-  parse_mode:'Markdown'
-});
-        break;
-case data === 'deposit_boa':
-        depositSessions[u_id] = "awaiting_boa";
-    await bot.sendMessage(u_id,`\nየ BOA አካውንት
+`,
+        {
+          parse_mode: "Markdown",
+        }
+      );
+      break;
+    case data === "deposit_boa":
+      depositSessions[u_id] = "awaiting_boa";
+      await bot.sendMessage(
+        u_id,
+        `\nየ BOA አካውንት
  168286813 - Fanuel Dessie
 
 \`\`\`መመሪያ
@@ -2780,39 +2878,123 @@ case data === 'deposit_boa':
 2. ብሩን ስትልኩ የከፈላችሁበትን መረጃ የያዝ አጭር የጹሁፍ መልክት(sms) ከ BOA ይደርሳችኋል
 3. የደረሳችሁን አጭር የጹሁፍ መለክት(sms) ሙሉዉን ኮፒ(copy) ካደረጋችሁ በኃላ confirm ሚለውን በመንካት ከታች ባለው የቴሌግራም የጹሁፍ ማስገቢአው ላይ ፔስት(paste) በማረግ ይላኩት \`\`\`
 
-`,{
-  parse_mode:'Markdown'
-});
-        break;
-case data.startsWith('approve_'):
-  const [, bank, userId, amount, reference] = data.split("_");
-    console.log(`Confirmed: ${bank} | ${userId} | ETB ${ parseFloat(amount.replace(/[^0-9.]/g, ""))} | Ref: ${reference}`);
-    create_a_transaction(userId, parseFloat(amount.replace(/[^0-9.]/g, "")),'d',bank,reference,'success')
+`,
+        {
+          parse_mode: "Markdown",
+        }
+      );
+      break;
+    case data.startsWith("approve_"):
+      const [, bank, userId, amount, reference] = data.split("_");
+      console.log(
+        `Confirmed: ${bank} | ${userId} | ETB ${parseFloat(
+          amount.replace(/[^0-9.]/g, "")
+        )} | Ref: ${reference}`
+      );
+      create_a_transaction(
+        userId,
+        parseFloat(amount.replace(/[^0-9.]/g, "")),
+        "d",
+        bank,
+        reference,
+        "success"
+      );
 
-    update_bonus_when_user_deposit(userId,  parseFloat(amount.replace(/[^0-9.]/g, "")))
+      update_bonus_when_user_deposit(
+        userId,
+        parseFloat(amount.replace(/[^0-9.]/g, ""))
+      );
 
-    setTimeout(async() => {
-      let balance = await get_balance_of_specific_user(userId).catch(console.error);
-  
+      setTimeout(async () => {
+        let balance = await get_balance_of_specific_user(userId).catch(
+          console.error
+        );
+
         await bot.sendMessage(
-      userId,
-      `✅ Your deposit of ETB ${amount} via ${bank} has been approved.  \`\`\` 💰 Withdrawable Balance : Br. ${balance[0].balance} \n 🎁 Non-Withdrawable balance : Br. ${balance[0].bonus} \`\`\``,
-      {
-        parse_mode: "Markdown",
-        
-      }
-    );
-  }, 1500);
+          userId,
+          `✅ Your deposit of ETB ${amount} via ${bank} has been approved.  \`\`\` 💰 Withdrawable Balance : Br. ${balance[0].balance} \n 🎁 Non-Withdrawable balance : Br. ${balance[0].bonus} \`\`\``,
+          {
+            parse_mode: "Markdown",
+          }
+        );
+      }, 1500);
 
-    await bot.sendMessage(u_id,`✅ Confirmed ETB ${ parseFloat(amount.replace(/[^0-9.]/g, ""))} deposit for user ${userId}`);
-    // await bot.sendMessage(userId, `✅ Your deposit of ETB ${amount} via ${bank} has been approved.`);
-  break;
+      await bot.sendMessage(
+        u_id,
+        `✅ Confirmed ETB ${parseFloat(
+          amount.replace(/[^0-9.]/g, "")
+        )} deposit for user ${userId}`
+      );
+      // await bot.sendMessage(userId, `✅ Your deposit of ETB ${amount} via ${bank} has been approved.`);
+      break;
 
-  case data.startsWith('reject_'):
+    case data.startsWith("reject_"):
       const [, userIdd] = data.split("_");
-    await bot.sendMessage(u_id,`❌ Rejected deposit for user ${userIdd}`);
-    await bot.sendMessage(userIdd, `❌ Your deposit request was rejected by admin.`);
-  break;
+      await bot.sendMessage(u_id, `❌ Rejected deposit for user ${userIdd}`);
+      await bot.sendMessage(
+        userIdd,
+        `❌ Your deposit request was rejected by admin.`
+      );
+
+      break;
+
+    // WIthdraw
+    case data === "withdraw_cbe" || data === "withdraw_boa":
+      const bankk = data.split("_")[1].toUpperCase();
+      console.log(bankk);
+      withdrawSessions[u_id] = { step: 1, bankk };
+      await bot.sendMessage(
+        u_id,
+        `You've selected ${bankk}. Please enter your account number (5–14 digits):`
+      );
+
+      break;
+    case data.startsWith("confirm_withdraw_"):
+      const parts = data.split("_");
+      const w_bank = parts[2];
+      const w_userId = parts[3];
+      const account = parts[4];
+      const name = decodeURIComponent(parts[5]);
+      const w_amount = parts[6];
+
+      console.log(
+        `✅ Confirmed Withdrawal: ${w_bank} | ${w_userId} | ${account} | ${name} | ETB ${w_amount}`
+      );
+
+      await bot.sendMessage(
+        u_id,
+        `✅ Withdrawal confirmed for user ${w_userId}.`
+      );
+
+      create_a_transaction(
+        w_userId,
+        parseFloat(w_amount.replace(/[^0-9.]/g, "")),
+        "w",
+        w_bank,
+        generate_transaction_id(),
+        "success"
+      );
+
+      update_balance_when_user_withdraw(
+        w_userId,
+        parseFloat(w_amount.replace(/[^0-9.]/g, ""))
+      );
+
+      setTimeout(async () => {
+        let balance = await get_balance_of_specific_user(w_userId).catch(
+          console.error
+        );
+
+        await bot.sendMessage(
+          w_userId,
+          `✅  Your withdrawal of ETB ${w_amount} via ${w_bank} has been approved.  \`\`\` 💰 Withdrawable Balance : Br. ${balance[0].balance} \n 🎁 Non-Withdrawable balance : Br. ${balance[0].bonus} \`\`\``,
+          {
+            parse_mode: "Markdown",
+          }
+        );
+      }, 1500);
+
+      break;
 
     // Admin
     case data === "todays_balance":
@@ -2833,9 +3015,9 @@ case data.startsWith('approve_'):
       bot.sendMessage(u_id, "Enter user ID...");
       break;
 
-      case data === 'approve_deposit_bank':
-        d_manual_bank_amount_admin[u_id] = true;
-        bot.sendMessage(u_id,'Enter amount...')
+    case data === "approve_deposit_bank":
+      d_manual_bank_amount_admin[u_id] = true;
+      bot.sendMessage(u_id, "Enter amount...");
       break;
   }
 });
@@ -3539,7 +3721,11 @@ async function start_withdrwal_process(u_id) {
               },
               {
                 text: "CBE",
-                callback_data: "w_first_step_cbe",
+                callback_data: "withdraw_cbe",
+              },
+              {
+                text: "BOA",
+                callback_data: "withdraw_boa",
               },
             ],
           ],
@@ -3814,10 +4000,11 @@ ${account} - Fanuel Dessie
   );
 }
 
-
 function parseCbeSms(text) {
   const amountMatch = text.match(/debited with ETB([\d,\.]+)/);
-  const refMatch = text.match(/https:\/\/apps\.cbe\.com\.et:100\/\?id=([A-Za-z0-9]+)/);
+  const refMatch = text.match(
+    /https:\/\/apps\.cbe\.com\.et:100\/\?id=([A-Za-z0-9]+)/
+  );
   return {
     bank: "CBE",
     amount: amountMatch?.[1] || "N/A",
@@ -3835,7 +4022,6 @@ function parseBoaSms(text) {
   };
 }
 
-
 async function is_transaction_id_used(txn_id) {
   const [rows] = await pool.query(
     "SELECT 1 FROM transactions WHERE txn_id = ? LIMIT 1",
@@ -3844,8 +4030,6 @@ async function is_transaction_id_used(txn_id) {
   console.log("Transaction Exists:", rows.length > 0);
   return rows.length > 0; // true = already exists
 }
-
-
 
 app.use(express.static("public")); // or your frontend path
 
