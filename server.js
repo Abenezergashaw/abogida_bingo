@@ -27,24 +27,24 @@ const wss = new WebSocketServer({ server });
 const bot = new TelegramBot(token, { polling: true });
 
 // MySQL connection setup
-// const pool = mysql.createPool({
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASSWORD,
-//   database: process.env.DB_NAME,
-//   waitForConnections: true,
-//   connectionLimit: 10,
-//   queueLimit: 0,
-// });
 const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "Ab@596919",
-  database: "bingo",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
 });
+// const pool = mysql.createPool({
+//   host: "localhost",
+//   user: "root",
+//   password: "Ab@596919",
+//   database: "bingo",
+//   waitForConnections: true,
+//   connectionLimit: 10,
+//   queueLimit: 0,
+// });
 
 //Routes
 app.get("/ping", (req, res) => {
@@ -2493,7 +2493,7 @@ const session = depositSessions[u_id];
     if (session === "awaiting_boa") parsed = parseBoaSms(text);
 
     if (!parsed.amount || !parsed.reference) {
-      await bot.sendMessage(u_id,"🚫 Failed to parse the message. Please try again or contact support.");
+      await bot.sendMessage(u_id,"🚫 Invalid SMS message. Please try again or contach support.");
       return;
     }
 
@@ -2505,7 +2505,11 @@ if (alreadyExists) {
   return;
 
 }
-
+if(parseFloat(parsed.amount.replace(/[^0-9.]/g, "")) < 10 ){
+  await bot.sendMessage(u_id,"🚫 Minimum deposit amount Br. 10.");
+  depositSessions[u_id] = null;
+  return;
+}else{
 
 
     depositSessions[u_id] = null;
@@ -2538,7 +2542,7 @@ if (alreadyExists) {
   depositSessions[u_id] = null;
 
   }
-  
+}
 
 
 
