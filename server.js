@@ -2218,7 +2218,7 @@ function message_delete_function(u_id, m_id) {
 cbe_account = "1000185229207";
 cbe_name = "Abenezer Gashaw";
 
-const adminId = "353008986";
+const adminId = "298268884";
 
 // Conversation states
 const receive_amount_telebirr = {};
@@ -2461,7 +2461,7 @@ bot.on("message", async (msg) => {
     turn_off_converstation_states(u_id);
     user_to_depoist[u_id] = u_id;
     bot.sendMessage(
-      "353008986",
+      adminId,
       `${text.trim()} \n\nMessage from userID: ${u_id}`,
       {
         reply_markup: {
@@ -3577,7 +3577,7 @@ function deposit_first_step(c_id) {
       parse_mode: "Markdown",
       reply_markup: {
         inline_keyboard: [
-          [{ text: "Addis Pay", callback_data: "d_automatic_first_step" }],
+          // [{ text: "Addis Pay", callback_data: "d_automatic_first_step" }],
           [
             {
               text: "Manual",
@@ -3658,7 +3658,7 @@ function d_fourth_step_telebirr(
 ) {
   bot
     .sendMessage(
-      "353008986",
+      adminId,
       `User confirmed Payment \n\nUser: ${f_name} \n\nPhone Number: ${confirm_phone_number_telebirr} \n\nAmount: ${confirm_amount_telebirr}\n\nMethod: TELEBIRR \n\nUser ID: ${confirm_u_id_telebirr} \n\n⚠️ Please confirm payment from your telebirr for the deposit from the specified number and approve it.`,
       {
         reply_markup: {
@@ -3792,7 +3792,7 @@ async function w_third_step_telebirr(u_id, amount) {
   ).then(() => {
     bot
       .sendMessage(
-        "353008986",
+        adminId,
         `Withdrawal request from:\n\nUser: ${f_name}\n\nPhone number: ${phone_number}\n\nAmount: ${amount}\n\nUser ID: ${u_id}`,
         {
           reply_markup: {
