@@ -56,8 +56,17 @@
         // Create new ball
         const newBall = document.createElement("div");
         newBall.className =
-          "ball ball-enter absolute w-5 h-5 bg-yellow-400 rounded-full left-1/2";
-        newBall.textContent = a;
+          "ball ball-enter absolute w-10 h-10 bg-gradient-to-br from-orange-300 via-orange-400 to-orange-500 rounded-full left-1/2 flex flex-col justify-center items-center shadow-lg shadow-orange-600/40 ring-1 ring-orange-200/40 transform-gpu scale-105 text-white  ";
+
+        const num = document.createElement("div");
+        num.className = "text-base font-bold";
+        num.textContent = "65";
+        const letter = document.createElement("div");
+        letter.textContent = "O";
+        letter.className = "text-sm";
+
+        newBall.appendChild(num);
+        newBall.appendChild(letter);
         container.appendChild(newBall);
 
         // Force reflow for animation

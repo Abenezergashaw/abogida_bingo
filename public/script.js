@@ -57,8 +57,7 @@ const playing_cartela_container_5 = document.querySelector(
   ".playing_cartela_section_5"
 );
 const counter_5 = document.querySelector(".counter_5");
-const voice_5 = document.querySelector('.voice_5')
-
+const voice_5 = document.querySelector(".voice_5");
 
 // Game 10 containers
 const registery_10 = document.querySelector(".registery_10");
@@ -68,9 +67,7 @@ const playing_cartela_container_10 = document.querySelector(
   ".playing_cartela_section_10"
 );
 const counter_10 = document.querySelector(".counter_10");
-const voice_10 = document.querySelector('.voice_10')
-
-
+const voice_10 = document.querySelector(".voice_10");
 
 // Game 20 containers
 const registery_20 = document.querySelector(".registery_20");
@@ -80,8 +77,7 @@ const playing_cartela_container_20 = document.querySelector(
   ".playing_cartela_section_20"
 );
 const counter_20 = document.querySelector(".counter_20");
-const voice_20 = document.querySelector('.voice_20')
-
+const voice_20 = document.querySelector(".voice_20");
 
 // Game 50 containers
 const registery_50 = document.querySelector(".registery_50");
@@ -91,8 +87,7 @@ const playing_cartela_container_50 = document.querySelector(
   ".playing_cartela_section_50"
 );
 const counter_50 = document.querySelector(".counter_50");
-const voice_50 = document.querySelector('.voice_50')
-
+const voice_50 = document.querySelector(".voice_50");
 
 // Game 100 containers
 const registery_100 = document.querySelector(".registery_100");
@@ -102,8 +97,7 @@ const playing_cartela_container_100 = document.querySelector(
   ".playing_cartela_section_100"
 );
 const counter_100 = document.querySelector(".counter_100");
-const voice_100 = document.querySelector('.voice_100')
-
+const voice_100 = document.querySelector(".voice_100");
 
 // Game 500 containers
 const registery_500 = document.querySelector(".registery_500");
@@ -113,8 +107,7 @@ const playing_cartela_container_500 = document.querySelector(
   ".playing_cartela_section_500"
 );
 const counter_500 = document.querySelector(".counter_500");
-const voice_500 = document.querySelector('.voice_500')
-
+const voice_500 = document.querySelector(".voice_500");
 
 // Game 1000 containers
 const registery_1000 = document.querySelector(".registery_1000");
@@ -124,8 +117,7 @@ const playing_cartela_container_1000 = document.querySelector(
   ".playing_cartela_section_1000"
 );
 const counter_1000 = document.querySelector(".counter_1000");
-const voice_1000 = document.querySelector('.voice_1000')
-
+const voice_1000 = document.querySelector(".voice_1000");
 
 // Game 5 variables
 let selected_card_5 = null;
@@ -350,8 +342,8 @@ socket.addEventListener("message", async (event) => {
         balls_5
       );
       if (player.active) {
-        if(!is_mute_5){
-        await playCachedAudio(`sound${data.current_drawn_number_5}`);
+        if (!is_mute_5) {
+          await playCachedAudio(`sound${data.current_drawn_number_5}`);
         }
       }
 
@@ -428,10 +420,10 @@ socket.addEventListener("message", async (event) => {
       );
       update_balance();
     }
-  }else if(data.type === 'only_one_player_5'){
+  } else if (data.type === "only_one_player_5") {
     let u = data.u;
-    if(u == username){
-      reload_page()
+    if (u == username) {
+      reload_page();
     }
   }
 
@@ -449,7 +441,9 @@ socket.addEventListener("message", async (event) => {
       selected_card_10 = new_card;
       console.log(selected_card_10);
     } else {
-      document.querySelector(`.card_10_${new_card}`).classList.add("opacity-30");
+      document
+        .querySelector(`.card_10_${new_card}`)
+        .classList.add("opacity-30");
     }
     if (current_card) {
       document
@@ -491,8 +485,8 @@ socket.addEventListener("message", async (event) => {
         balls_10
       );
       if (player.active) {
-        if(!is_mute_10){
-        await playCachedAudio(`sound${data.current_drawn_number_10}`);
+        if (!is_mute_10) {
+          await playCachedAudio(`sound${data.current_drawn_number_10}`);
         }
       }
 
@@ -569,13 +563,12 @@ socket.addEventListener("message", async (event) => {
       );
       update_balance();
     }
-  }else if(data.type === 'only_one_player_10'){
+  } else if (data.type === "only_one_player_10") {
     let u = data.u;
-    if(u == username){
-      reload_page()
+    if (u == username) {
+      reload_page();
     }
   }
-
 
   // Game 20 socket messages
   if (data.type === "timer_20") {
@@ -591,7 +584,9 @@ socket.addEventListener("message", async (event) => {
       selected_card_20 = new_card;
       console.log(selected_card_20);
     } else {
-      document.querySelector(`.card_20_${new_card}`).classList.add("opacity-30");
+      document
+        .querySelector(`.card_20_${new_card}`)
+        .classList.add("opacity-30");
     }
     if (current_card) {
       document
@@ -633,8 +628,8 @@ socket.addEventListener("message", async (event) => {
         balls_20
       );
       if (player.active) {
-        if(!is_mute_20){
-        await playCachedAudio(`sound${data.current_drawn_number_20}`);
+        if (!is_mute_20) {
+          await playCachedAudio(`sound${data.current_drawn_number_20}`);
         }
       }
 
@@ -711,13 +706,12 @@ socket.addEventListener("message", async (event) => {
       );
       update_balance();
     }
-  }else if(data.type === 'only_one_player_20'){
+  } else if (data.type === "only_one_player_20") {
     let u = data.u;
-    if(u == username){
-      reload_page()
+    if (u == username) {
+      reload_page();
     }
   }
-
 
   // Game 50 socket messages
   if (data.type === "timer_50") {
@@ -733,7 +727,9 @@ socket.addEventListener("message", async (event) => {
       selected_card_50 = new_card;
       console.log(selected_card_50);
     } else {
-      document.querySelector(`.card_50_${new_card}`).classList.add("opacity-30");
+      document
+        .querySelector(`.card_50_${new_card}`)
+        .classList.add("opacity-30");
     }
     if (current_card) {
       document
@@ -775,8 +771,8 @@ socket.addEventListener("message", async (event) => {
         balls_50
       );
       if (player.active) {
-        if(!is_mute_50){
-        await playCachedAudio(`sound${data.current_drawn_number_50}`);
+        if (!is_mute_50) {
+          await playCachedAudio(`sound${data.current_drawn_number_50}`);
         }
       }
 
@@ -853,13 +849,12 @@ socket.addEventListener("message", async (event) => {
       );
       update_balance();
     }
-  }else if(data.type === 'only_one_player_50'){
+  } else if (data.type === "only_one_player_50") {
     let u = data.u;
-    if(u == username){
-      reload_page()
+    if (u == username) {
+      reload_page();
     }
   }
-
 
   // Game 100 socket messages
   if (data.type === "timer_100") {
@@ -875,7 +870,9 @@ socket.addEventListener("message", async (event) => {
       selected_card_100 = new_card;
       console.log(selected_card_100);
     } else {
-      document.querySelector(`.card_100_${new_card}`).classList.add("opacity-30");
+      document
+        .querySelector(`.card_100_${new_card}`)
+        .classList.add("opacity-30");
     }
     if (current_card) {
       document
@@ -917,8 +914,8 @@ socket.addEventListener("message", async (event) => {
         balls_100
       );
       if (player.active) {
-        if(!is_mute_100){
-        await playCachedAudio(`sound${data.current_drawn_number_100}`);
+        if (!is_mute_100) {
+          await playCachedAudio(`sound${data.current_drawn_number_100}`);
         }
       }
 
@@ -995,13 +992,12 @@ socket.addEventListener("message", async (event) => {
       );
       update_balance();
     }
-  }else if(data.type === 'only_one_player_100'){
+  } else if (data.type === "only_one_player_100") {
     let u = data.u;
-    if(u == username){
-      reload_page()
+    if (u == username) {
+      reload_page();
     }
   }
-
 
   // Game 500 socket messages
   if (data.type === "timer_500") {
@@ -1017,7 +1013,9 @@ socket.addEventListener("message", async (event) => {
       selected_card_500 = new_card;
       console.log(selected_card_500);
     } else {
-      document.querySelector(`.card_500_${new_card}`).classList.add("opacity-30");
+      document
+        .querySelector(`.card_500_${new_card}`)
+        .classList.add("opacity-30");
     }
     if (current_card) {
       document
@@ -1059,8 +1057,8 @@ socket.addEventListener("message", async (event) => {
         balls_500
       );
       if (player.active) {
-        if(!is_mute_500){
-        await playCachedAudio(`sound${data.current_drawn_number_500}`);
+        if (!is_mute_500) {
+          await playCachedAudio(`sound${data.current_drawn_number_500}`);
         }
       }
 
@@ -1137,16 +1135,15 @@ socket.addEventListener("message", async (event) => {
       );
       update_balance();
     }
-  }else if(data.type === 'only_one_player_500'){
+  } else if (data.type === "only_one_player_500") {
     let u = data.u;
-    if(u == username){
-      reload_page()
+    if (u == username) {
+      reload_page();
     }
   }
 
-
   // Game 1000 socket messages
- if (data.type === "timer_1000") {
+  if (data.type === "timer_1000") {
     update_info_of_1000(data.value, data.players);
   } else if (data.type === "new_card_selected_1000") {
     let sent_username = data.username;
@@ -1159,7 +1156,9 @@ socket.addEventListener("message", async (event) => {
       selected_card_1000 = new_card;
       console.log(selected_card_1000);
     } else {
-      document.querySelector(`.card_1000_${new_card}`).classList.add("opacity-30");
+      document
+        .querySelector(`.card_1000_${new_card}`)
+        .classList.add("opacity-30");
     }
     if (current_card) {
       document
@@ -1184,7 +1183,9 @@ socket.addEventListener("message", async (event) => {
         el.textContent = "Active";
       });
     }
-    document.querySelector(".game_started_flag_1000").classList.remove("hidden");
+    document
+      .querySelector(".game_started_flag_1000")
+      .classList.remove("hidden");
     document.querySelector(".entry_1000_status").textContent = "Active";
     document.querySelectorAll(".cards_1000").forEach((c) => {
       c.classList.remove("opacity-30");
@@ -1201,8 +1202,8 @@ socket.addEventListener("message", async (event) => {
         balls_1000
       );
       if (player.active) {
-        if(!is_mute_1000){
-        await playCachedAudio(`sound${data.current_drawn_number_1000}`);
+        if (!is_mute_1000) {
+          await playCachedAudio(`sound${data.current_drawn_number_1000}`);
         }
       }
 
@@ -1279,15 +1280,12 @@ socket.addEventListener("message", async (event) => {
       );
       update_balance();
     }
-  }else if(data.type === 'only_one_player_1000'){
+  } else if (data.type === "only_one_player_1000") {
     let u = data.u;
-    if(u == username){
-      reload_page()
+    if (u == username) {
+      reload_page();
     }
   }
-
-
-
 });
 
 let balls_5 = [];
@@ -1298,6 +1296,25 @@ let balls_100 = [];
 let balls_500 = [];
 let balls_1000 = [];
 
+function letter_generator(n) {
+  let l = "";
+  if (n >= 1 && n <= 15) {
+    l = "B";
+  } else if (n >= 16 && n <= 30) {
+    l = "I";
+  } else if (n >= 31 && n <= 45) {
+    l = "N";
+  } else if (n >= 46 && n <= 60) {
+    l = "G";
+  } else if (n >= 61 && n <= 75) {
+    l = "O";
+  } else {
+    l = "Invalid"; // Optional: handle invalid input
+  }
+
+  return l;
+}
+
 function animateCalling(container, number, game, balls) {
   // Shift existing balls right
   balls.forEach((ball, i) => {
@@ -1306,11 +1323,25 @@ function animateCalling(container, number, game, balls) {
 
   // Create new ball
   const newBall = document.createElement("div");
-  newBall.className = `ball ball-enter absolute w-8 h-8 bg-gradient-to-br from-orange-300 via-orange-400 to-orange-500 
-  rounded-full left-1/2 flex justify-center items-center 
-  shadow-lg shadow-orange-600/40 ring-1 ring-orange-200/40 
-  transform-gpu scale-105 ${game} text-white font-bold`;
-  newBall.textContent = number;
+  // newBall.className = `ball ball-enter absolute w-8 h-8 bg-gradient-to-br from-orange-300 via-orange-400 to-orange-500
+  // rounded-full left-1/2 flex justify-center items-center
+  // shadow-lg shadow-orange-600/40 ring-1 ring-orange-200/40
+  // transform-gpu scale-105 ${game} text-white font-bold`;
+  // newBall.textContent = number;
+
+  newBall.className =
+    "ball ball-enter absolute w-10 h-10 bg-gradient-to-br from-orange-300 via-orange-400 to-orange-500 rounded-full left-1/2 flex flex-col justify-center items-center shadow-lg shadow-orange-600/40 ring-1 ring-orange-200/40 transform-gpu scale-105 text-white  ";
+
+  const num = document.createElement("div");
+  num.className = "text-base font-bold";
+  num.textContent = number;
+  const letter = document.createElement("div");
+  letter.textContent = letter_generator(number);
+  letter.className = "text-sm";
+
+  newBall.appendChild(num);
+  newBall.appendChild(letter);
+
   container.appendChild(newBall);
 
   // Force reflow for animation
@@ -2570,80 +2601,72 @@ function reload_page() {
   location.reload();
 }
 
-
-voice_5.addEventListener("click", ()=>{
-  if(is_mute_5){
-    is_mute_5 = false
-    voice_5.textContent = '🔇';
-    
-  }else{
+voice_5.addEventListener("click", () => {
+  if (is_mute_5) {
+    is_mute_5 = false;
+    voice_5.textContent = "🔇";
+  } else {
     is_mute_5 = true;
-    voice_5.textContent = '📢';
+    voice_5.textContent = "📢";
   }
-})
+});
 
-voice_10.addEventListener("click", ()=>{
-  if(is_mute_10){
-    is_mute_10 = false
-    voice_10.textContent = '🔇';
-    
-  }else{
+voice_10.addEventListener("click", () => {
+  if (is_mute_10) {
+    is_mute_10 = false;
+    voice_10.textContent = "🔇";
+  } else {
     is_mute_10 = true;
-    voice_10.textContent = '📢';
+    voice_10.textContent = "📢";
   }
-})
+});
 
-voice_20.addEventListener("click", ()=>{
-  if(is_mute_20){
-    is_mute_20 = false
-    voice_20.textContent = '🔇';
-    
-  }else{
+voice_20.addEventListener("click", () => {
+  if (is_mute_20) {
+    is_mute_20 = false;
+    voice_20.textContent = "🔇";
+  } else {
     is_mute_20 = true;
-    voice_20.textContent = '📢';
+    voice_20.textContent = "📢";
   }
-})
+});
 
-voice_50.addEventListener("click", ()=>{
-  if(is_mute_50){
-    is_mute_50 = false
-    voice_50.textContent = '🔇';
-    
-  }else{
+voice_50.addEventListener("click", () => {
+  if (is_mute_50) {
+    is_mute_50 = false;
+    voice_50.textContent = "🔇";
+  } else {
     is_mute_50 = true;
-    voice_50.textContent = '📢';
+    voice_50.textContent = "📢";
   }
-})
+});
 
-voice_100.addEventListener("click", ()=>{
-  if(is_mute_100){
-    is_mute_100 = false
-    voice_100.textContent = '🔇';
-    
-  }else{
+voice_100.addEventListener("click", () => {
+  if (is_mute_100) {
+    is_mute_100 = false;
+    voice_100.textContent = "🔇";
+  } else {
     is_mute_100 = true;
-    voice_100.textContent = '📢';
+    voice_100.textContent = "📢";
   }
-})
+});
 
-voice_500.addEventListener("click", ()=>{
-  if(is_mute_500){
-    is_mute_500 = false
-    voice_500.textContent = '🔇';
-    
-  }else{
+voice_500.addEventListener("click", () => {
+  if (is_mute_500) {
+    is_mute_500 = false;
+    voice_500.textContent = "🔇";
+  } else {
     is_mute_500 = true;
-    voice_500.textContent = '📢';
+    voice_500.textContent = "📢";
   }
-})
+});
 
-voice_1000.addEventListener("click", ()=>{
-  if(is_mute_1000){
-    is_mute_1000 = false
-    voice_1000.textContent = '🔇';
-    
-  }else{
+voice_1000.addEventListener("click", () => {
+  if (is_mute_1000) {
+    is_mute_1000 = false;
+    voice_1000.textContent = "🔇";
+  } else {
     is_mute_1000 = true;
-    voice_1000.textContent = '📢';
+    voice_1000.textContent = "📢";
   }
-})
+});
