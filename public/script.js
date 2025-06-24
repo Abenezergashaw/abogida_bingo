@@ -1330,7 +1330,7 @@ function animateCalling(container, number, game, balls) {
   // newBall.textContent = number;
 
   newBall.className =
-    "ball ball-enter absolute w-10 h-10 bg-gradient-to-br from-orange-300 via-orange-400 to-orange-500 rounded-full left-1/2 flex flex-col justify-center items-center shadow-lg shadow-orange-600/40 ring-1 ring-orange-200/40 transform-gpu scale-105 text-white  ";
+    "ball ball-enter absolute w-8 h-8 bg-gradient-to-br from-orange-300 via-orange-400 to-orange-500 rounded-full left-1/2 flex flex-col justify-center items-center shadow-lg shadow-orange-600/40 ring-1 ring-orange-200/40 transform-gpu scale-105 text-white  ";
 
   const num = document.createElement("div");
   num.className = "text-base font-bold";
