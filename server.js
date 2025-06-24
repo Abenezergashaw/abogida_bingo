@@ -3439,7 +3439,7 @@ function creating_keyboard_buttons(c_id, new_user) {
   const user_keyboard_buttons = {
     reply_markup: {
       keyboard: [
-        ["A d m i n"],
+        // ["A d m i n"],
         ["▶️ Play", "📋 Rules"],
         ["💰 Balance"],
         ["📥 Deposit", "📤 Withdraw"],
