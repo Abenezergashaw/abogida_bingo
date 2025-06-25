@@ -2334,7 +2334,7 @@ bot.on("message", async (msg) => {
             [
               {
                 text: "Join channel",
-                url: "https://t.me/chapa_bingo",
+                url: "https://t.me/chapabingo",
               },
             ],
           ],
