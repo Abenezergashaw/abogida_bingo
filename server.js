@@ -2327,7 +2327,7 @@ bot.on("message", async (msg) => {
     case "📞 Contact":
       turn_off_converstation_states(u_id);
 
-      bot.sendMessage(c_id, `Admins: \n\n@aben59\n`, {
+      bot.sendMessage(c_id, `Admins: \n\n@chapasupport\n`, {
         parse_mode: "Markdown",
         reply_markup: {
           inline_keyboard: [
@@ -3632,7 +3632,7 @@ async function d_third_step_telebirr(c_id, phone_number, text, u_id) {
 
   bot.sendMessage(
     c_id,
-    `Transaction created using ${phone_number} for amount *Br. ${text}.* \n\nPlease send the specified amount to 251934596919 via TELEBIRR.\n\n*Please use ${phone_number} to send only.* \n\n Only press confirm after payment. \n \`\`\` 5 mins\`\`\``,
+    `Transaction created using ${phone_number} for amount *Br. ${text}.* \n\nPlease send the specified amount to 251938880223 via TELEBIRR.\n\n*Please use ${phone_number} to send only.* \n\n Only press confirm after payment. \n \`\`\` 5 mins\`\`\``,
     {
       parse_mode: "Markdown",
       reply_markup: {
