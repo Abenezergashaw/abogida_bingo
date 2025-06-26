@@ -177,13 +177,13 @@ wss.on("connection", function connection(ws) {
   ws.send(
     JSON.stringify({
       type: "refresh_players",
-      players_5_set: Array.from(players_5_set),
-      players_10_set: Array.from(players_10_set),
-      players_20_set: Array.from(players_20_set),
-      players_50_set: Array.from(players_50_set),
-      players_100_set: Array.from(players_100_set),
-      players_500_set: Array.from(players_500_set),
-      players_1000_set: Array.from(players_1000_set),
+      players_5_set: Array.from(players_5),
+      players_10_set: Array.from(players_10),
+      players_20_set: Array.from(players_20),
+      players_50_set: Array.from(players_50),
+      players_100_set: Array.from(players_100),
+      players_500_set: Array.from(players_500),
+      players_1000_set: Array.from(players_1000),
     })
   );
   console.log("selected number: ", players_10_set);
@@ -277,46 +277,48 @@ wss.on("connection", function connection(ws) {
         let u = data.username;
         let n = data.number;
 
-        let html = await return_winner_html_5(cards[n - 1], u);
+        if (active_game_5) {
+          let html = await return_winner_html_5(cards[n - 1], u);
 
-        if (!html) {
-          console.log(u + "Blocked");
-          let balance = await update_balance_of_winner(u, 0).catch(
-            console.error
-          );
+          if (!html) {
+            console.log(u + "Blocked");
+            let balance = await update_balance_of_winner(u, 0).catch(
+              console.error
+            );
 
-          let user_blocked_5 = players_5.find((p) => p.username === u);
-          if (user_blocked_5) {
-            user_blocked_5.active = false;
-          }
-
-          broadcast({
-            type: "block_player_5",
-            u,
-            balance,
-          });
-          return;
-        } else {
-          let win_amount = calculate_win_amount(5, players_5.length);
-
-          console.log("WInning amount: ", win_amount);
-          let balance = await update_balance_of_winner(u, win_amount).catch(
-            console.error
-          );
-
-          await update_winner_on_games(5, u);
-          if (active_game_5) {
-            active_game_5 = false;
+            let user_blocked_5 = players_5.find((p) => p.username === u);
+            if (user_blocked_5) {
+              user_blocked_5.active = false;
+            }
 
             broadcast({
-              type: "bingo_5",
+              type: "block_player_5",
               u,
-              html,
-              players_5,
-              active_game_5,
               balance,
             });
-            game_end_5();
+            return;
+          } else {
+            let win_amount = calculate_win_amount(5, players_5.length);
+
+            console.log("WInning amount: ", win_amount);
+            let balance = await update_balance_of_winner(u, win_amount).catch(
+              console.error
+            );
+
+            await update_winner_on_games(5, u);
+            if (active_game_5) {
+              active_game_5 = false;
+
+              broadcast({
+                type: "bingo_5",
+                u,
+                html,
+                players_5,
+                active_game_5,
+                balance,
+              });
+              game_end_5();
+            }
           }
         }
       }
@@ -386,6 +388,7 @@ wss.on("connection", function connection(ws) {
         let n = data.number;
 
         let html = await return_winner_html_10(cards[n - 1], u);
+        if(active_game_10){
 
         if (!html) {
           console.log(u + "Blocked");
@@ -427,6 +430,7 @@ wss.on("connection", function connection(ws) {
             game_end_10();
           }
         }
+      }
       }
 
       // game 20 socket messages
@@ -492,6 +496,7 @@ wss.on("connection", function connection(ws) {
       } else if (data.type === "bingo_20") {
         let u = data.username;
         let n = data.number;
+        if(active_game_20){
 
         let html = await return_winner_html_20(cards[n - 1], u);
 
@@ -535,6 +540,7 @@ wss.on("connection", function connection(ws) {
             game_end_20();
           }
         }
+      }
       }
 
       // game 50 socket messages
@@ -600,6 +606,7 @@ wss.on("connection", function connection(ws) {
       } else if (data.type === "bingo_50") {
         let u = data.username;
         let n = data.number;
+        if(active_game_50){
 
         let html = await return_winner_html_50(cards[n - 1], u);
 
@@ -643,6 +650,7 @@ wss.on("connection", function connection(ws) {
             game_end_50();
           }
         }
+      }
       }
 
       // game 100 socket messages
@@ -708,6 +716,7 @@ wss.on("connection", function connection(ws) {
       } else if (data.type === "bingo_100") {
         let u = data.username;
         let n = data.number;
+        if(active_game_100){
 
         let html = await return_winner_html_100(cards[n - 1], u);
 
@@ -752,6 +761,7 @@ wss.on("connection", function connection(ws) {
           }
         }
       }
+    }
 
       // game 500 socket messages
       else if (data.type === "selection_card_500") {
@@ -816,6 +826,7 @@ wss.on("connection", function connection(ws) {
       } else if (data.type === "bingo_500") {
         let u = data.username;
         let n = data.number;
+        if(active_game_500){
 
         let html = await return_winner_html_500(cards[n - 1], u);
 
@@ -860,6 +871,7 @@ wss.on("connection", function connection(ws) {
           }
         }
       }
+    }
 
       // game 1000 socket messages
       else if (data.type === "selection_card_1000") {
@@ -924,6 +936,7 @@ wss.on("connection", function connection(ws) {
       } else if (data.type === "bingo_1000") {
         let u = data.username;
         let n = data.number;
+        if(active_game_1000){
 
         let html = await return_winner_html_1000(cards[n - 1], u);
 
@@ -968,6 +981,7 @@ wss.on("connection", function connection(ws) {
           }
         }
       }
+    }
     } catch (err) {
       console.error("Failed to parse message:", message, err.message);
     }
@@ -3700,7 +3714,7 @@ function turn_off_converstation_states(u_id) {
 async function check_if_user_deposited_at_least_once(u_id) {
   try {
     const [rows] = await pool.query(
-      `SELECT 1 FROM transactions WHERE user_id = ? AND status = 'success'GROUP BY user_id HAVING SUM(amount) > 100`,
+      `SELECT 1 FROM transactions WHERE user_id = ? AND status = 'success' AND type = 'd' GROUP BY user_id HAVING SUM(amount) >= 100`,
       [u_id]
     );
     if (rows.length > 0) {
