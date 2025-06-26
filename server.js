@@ -3693,7 +3693,7 @@ function turn_off_converstation_states(u_id) {
 async function check_if_user_deposited_at_least_once(u_id) {
   try {
     const [rows] = await pool.query(
-      `SELECT 1 FROM transactions WHERE user_id = ? AND status = 'success'GROUP BY user_id HAVING SUM(amount) > 50`,
+      `SELECT 1 FROM transactions WHERE user_id = ? AND status = 'success'GROUP BY user_id HAVING SUM(amount) > 100`,
       [u_id]
     );
     if (rows.length > 0) {
@@ -3735,7 +3735,7 @@ async function start_withdrwal_process(u_id) {
   } else {
     bot.sendMessage(
       u_id,
-      "⚠️ You need to make a deposit of total amount * >= Br. 50 * to withdraw money.",
+      "⚠️ You need to make a deposit of total amount * >= Br. 100 * to withdraw money.",
       {
         parse_mode: "Markdown",
       }
