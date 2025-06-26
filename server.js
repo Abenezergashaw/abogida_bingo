@@ -1183,6 +1183,7 @@ function game_end_5() {
   players_5_map.clear();
   players_5_set.clear();
   drawn_numbers_5 = [];
+  line_making_array_5 = [];
   numbers_5 = [];
   players_5 = [];
 }
@@ -1290,6 +1291,7 @@ function game_end_10() {
   players_10_map.clear();
   players_10_set.clear();
   drawn_numbers_10 = [];
+  line_making_array_10 = [];
   numbers_10 = [];
   players_10 = [];
 }
@@ -1397,6 +1399,7 @@ function game_end_20() {
   players_20_map.clear();
   players_20_set.clear();
   drawn_numbers_20 = [];
+  line_making_array_20 = [];
   numbers_20 = [];
   players_20 = [];
 }
@@ -1504,6 +1507,7 @@ function game_end_50() {
   players_50_map.clear();
   players_50_set.clear();
   drawn_numbers_50 = [];
+  line_making_array_50 = [];
   numbers_50 = [];
   players_50 = [];
 }
@@ -1611,6 +1615,7 @@ function game_end_100() {
   players_100_map.clear();
   players_100_set.clear();
   drawn_numbers_100 = [];
+  line_making_array_100 = [];
   numbers_100 = [];
   players_100 = [];
 }
@@ -1718,6 +1723,7 @@ function game_end_500() {
   players_500_map.clear();
   players_500_set.clear();
   drawn_numbers_500 = [];
+  line_making_array_500 = [];
   numbers_500 = [];
   players_500 = [];
 }
@@ -1829,6 +1835,7 @@ function game_end_1000() {
   players_1000_map.clear();
   players_1000_set.clear();
   drawn_numbers_1000 = [];
+  line_making_array_1000 = [];
   numbers_1000 = [];
   players_1000 = [];
 }
