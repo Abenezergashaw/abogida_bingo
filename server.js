@@ -270,6 +270,7 @@ wss.on("connection", function connection(ws) {
             decrease_balance_of_user_when_start_game(data.username, 5).catch(
               console.error
             );
+            add_game_to_user(data.username)
             console.log("Started players", players_5);
           }
         }
@@ -304,6 +305,7 @@ wss.on("connection", function connection(ws) {
             let balance = await update_balance_of_winner(u, win_amount).catch(
               console.error
             );
+            add_win_game_to_user(u)
 
             await update_winner_on_games(5, u);
             if (active_game_5) {
@@ -380,6 +382,9 @@ wss.on("connection", function connection(ws) {
             decrease_balance_of_user_when_start_game(data.username, 10).catch(
               console.error
             );
+
+            add_game_to_user(data.username)
+
             console.log("Started players", players_10);
           }
         }
@@ -395,6 +400,7 @@ wss.on("connection", function connection(ws) {
           let balance = await update_balance_of_winner(u, 0).catch(
             console.error
           );
+
 
           let user_blocked_10 = players_10.find((p) => p.username === u);
           if (user_blocked_10) {
@@ -414,6 +420,8 @@ wss.on("connection", function connection(ws) {
           let balance = await update_balance_of_winner(u, win_amount).catch(
             console.error
           );
+            add_win_game_to_user(u)
+
 
           await update_winner_on_games(10, u);
           if (active_game_10) {
@@ -490,6 +498,8 @@ wss.on("connection", function connection(ws) {
             decrease_balance_of_user_when_start_game(data.username, 20).catch(
               console.error
             );
+            add_game_to_user(data.username)
+
             console.log("Started players", players_20);
           }
         }
@@ -524,6 +534,8 @@ wss.on("connection", function connection(ws) {
           let balance = await update_balance_of_winner(u, win_amount).catch(
             console.error
           );
+            add_win_game_to_user(u)
+
 
           await update_winner_on_games(20, u);
           if (active_game_20) {
@@ -600,6 +612,9 @@ wss.on("connection", function connection(ws) {
             decrease_balance_of_user_when_start_game(data.username, 50).catch(
               console.error
             );
+
+            add_game_to_user(data.username)
+
             console.log("Started players", players_50);
           }
         }
@@ -634,6 +649,8 @@ wss.on("connection", function connection(ws) {
           let balance = await update_balance_of_winner(u, win_amount).catch(
             console.error
           );
+            add_win_game_to_user(u)
+
 
           await update_winner_on_games(50, u);
           if (active_game_50) {
@@ -710,6 +727,8 @@ wss.on("connection", function connection(ws) {
             decrease_balance_of_user_when_start_game(data.username, 100).catch(
               console.error
             );
+            add_game_to_user(data.username)
+
             console.log("Started players", players_100);
           }
         }
@@ -744,6 +763,8 @@ wss.on("connection", function connection(ws) {
           let balance = await update_balance_of_winner(u, win_amount).catch(
             console.error
           );
+
+            add_win_game_to_user(u)
 
           await update_winner_on_games(100, u);
           if (active_game_100) {
@@ -820,6 +841,8 @@ wss.on("connection", function connection(ws) {
             decrease_balance_of_user_when_start_game(data.username, 500).catch(
               console.error
             );
+            add_game_to_user(data.username)
+
             console.log("Started players", players_500);
           }
         }
@@ -854,6 +877,8 @@ wss.on("connection", function connection(ws) {
           let balance = await update_balance_of_winner(u, win_amount).catch(
             console.error
           );
+
+            add_win_game_to_user(u)
 
           await update_winner_on_games(500, u);
           if (active_game_500) {
@@ -930,6 +955,8 @@ wss.on("connection", function connection(ws) {
             decrease_balance_of_user_when_start_game(data.username, 1000).catch(
               console.error
             );
+            add_game_to_user(data.username)
+
             console.log("Started players", players_1000);
           }
         }
@@ -964,6 +991,8 @@ wss.on("connection", function connection(ws) {
           let balance = await update_balance_of_winner(u, win_amount).catch(
             console.error
           );
+
+            add_win_game_to_user(u)
 
           await update_winner_on_games(1000, u);
           if (active_game_1000) {
@@ -4051,6 +4080,34 @@ async function is_transaction_id_used(txn_id) {
   console.log("Transaction Exists:", rows.length > 0);
   return rows.length > 0; // true = already exists
 }
+
+
+async function add_game_to_user(u_id) {
+  try {
+    const sql = `
+      Update users set played_games = played_games + 1 where user_id = ?,
+    `;
+
+     await pool.query(sql, [u_id]);
+  } catch (err) {
+    console.error("❌ Error inserting game:", err.message);
+    throw err;
+  }
+}
+
+async function add_win_game_to_user(u_id) {
+  try {
+    const sql = `
+      Update users set won_games = won_games + 1 where user_id = ?,
+    `;
+
+     await pool.query(sql, [u_id]);
+  } catch (err) {
+    console.error("❌ Error inserting game:", err.message);
+    throw err;
+  }
+}
+
 
 app.use(express.static("public")); // or your frontend path
 

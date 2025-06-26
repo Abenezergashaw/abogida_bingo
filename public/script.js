@@ -241,41 +241,41 @@ socket.addEventListener("message", async (event) => {
     console.log(data.players_1000_set);
     for (let i = 0; i < data.players_5_set.length; i++) {
       document
-        .querySelector(`.card_5_${data.players_5_set[i]}`)
+        .querySelector(`.card_5_${data.players_5_set[i].number}`)
         .classList.add("opacity-30");
     }
     for (let i = 0; i < data.players_10_set.length; i++) {
       document
-        .querySelector(`.card_10_${data.players_10_set[i]}`)
+        .querySelector(`.card_10_${data.players_10_set[i].number}`)
         .classList.add("opacity-30");
     }
     for (let i = 0; i < data.players_20_set.length; i++) {
       document
-        .querySelector(`.card_20_${data.players_20_set[i]}`)
+        .querySelector(`.card_20_${data.players_20_set[i].number}`)
         .classList.add("opacity-30");
     }
 
     for (let i = 0; i < data.players_50_set.length; i++) {
       document
-        .querySelector(`.card_50_${data.players_50_set[i]}`)
+        .querySelector(`.card_50_${data.players_50_set[i].number}`)
         .classList.add("opacity-30");
     }
 
     for (let i = 0; i < data.players_100_set.length; i++) {
       document
-        .querySelector(`.card_100_${data.players_50_set[i]}`)
+        .querySelector(`.card_100_${data.players_50_set[i].number}`)
         .classList.add("opacity-30");
     }
 
     for (let i = 0; i < data.players_500_set.length; i++) {
       document
-        .querySelector(`.card_500_${data.players_50_set[i]}`)
+        .querySelector(`.card_500_${data.players_50_set[i].number}`)
         .classList.add("opacity-30");
     }
 
     for (let i = 0; i < data.players_1000_set.length; i++) {
       document
-        .querySelector(`.card_1000_${data.players_50_set[i]}`)
+        .querySelector(`.card_1000_${data.players_50_set[i].number}`)
         .classList.add("opacity-30");
     }
     update_info_of_5(active_game_5, data.players_5_set.length);
